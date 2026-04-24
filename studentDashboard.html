@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Dashboard - SBMT</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4, #8b5cf6);
+  background-size: 400% 400%;
+  animation: bg 10s ease infinite;
+  color: white;
+}
+
+@keyframes bg {
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
+}
+
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* SIDEBAR */
+.sidebar {
+  width: 220px;
+  background: rgba(0,0,0,0.25);
+  padding: 20px;
+  backdrop-filter: blur(10px);
+}
+
+.sidebar h2 {
+  text-align: center;
+}
+
+.nav {
+  margin-top: 20px;
+}
+
+.nav div {
+  padding: 12px;
+  margin: 8px 0;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.nav div:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* MAIN */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+}
+
+/* CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.card {
+  background: rgba(255,255,255,0.15);
+  padding: 20px;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+  text-align: center;
+}
+
+/* CHART */
+canvas {
+  background: white;
+  border-radius: 10px;
+  padding: 10px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+
+th {
+  background: rgba(0,0,0,0.4);
+  padding: 12px;
+}
+
+td {
+  padding: 10px;
+  text-align: center;
+}
+
+tr {
+  transition: 0.3s;
+}
+
+tr:hover {
+  background: rgba(255,255,255,0.2);
+  transform: scale(1.01);
+}
+
+.section {
+  display: none;
+  animation: fade 0.4s ease;
+}
+
+.section.active {
+  display: block;
+}
+
+@keyframes fade {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrapper">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <h2>🎓 SBMT</h2>
+
+    <div class="nav">
+      <div onclick="show('home')">🏠 Home</div>
+      <div onclick="show('attendance')">📅 Attendance</div>
+      <div onclick="show('marks')">📊 Marks</div>
+      <div onclick="show('notifications')">🔔 Notifications</div>
+      <div onclick="logout()">🚪 Logout</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+
+    <!-- HOME -->
+    <div id="home" class="section active">
+      <h2>Welcome Student 👋</h2>
+
+      <div class="cards">
+        <div class="card">
+          <h3 id="name">-</h3>
+          <p>Name</p>
+        </div>
+
+        <div class="card">
+          <h3 id="roll">-</h3>
+          <p>Roll No</p>
+        </div>
+
+        <div class="card">
+          <h3 id="class">-</h3>
+          <p>Class</p>
+        </div>
+      </div>
+    </div>
+<!-- NOTIFICATIONS -->
+<div id="notifications" class="section">
+  <h2>🔔 Notifications</h2>
+
+  <div id="notifBox"></div>
+</div>
+    <!-- ATTENDANCE -->
+    <div id="attendance" class="section">
+  <h2>📅 Attendance</h2>
+
+  <select id="monthSelect" onchange="loadAttendance()" style="margin-bottom:10px;"></select>
+
+  <table style="width:100%; background:white; color:black; border-radius:10px;">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Status</th>
+      </tr>
+    </thead>
+    <tbody id="attendanceData"></tbody>
+  </table>
+</div>
+
+    <!-- MARKS -->
+    <div id="marks" class="section">
+  <h2>📊 Marks</h2>
+
+  <table style="width:100%; background:white; color:black; border-radius:10px;">
+    <thead>
+    <tr>
+  <th>Subject</th>
+  <th>Exam</th>
+  <th>Marks</th>
+  <th>Remark</th>
+</tr>
+    </thead>
+    <tbody id="marksBox"></tbody>
+  </table>
+</div>
+
+  </div>
+
+</div>
+
+<script>
+const BACKEND_URL = "https://sbmt-backend.onrender.com";
+const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const monthSelect = document.getElementById("monthSelect");
+
+months.forEach((m,i)=>{
+  const opt = document.createElement("option");
+  opt.value = i;
+  opt.text = m;
+  monthSelect.appendChild(opt);
+});
+
+monthSelect.value = new Date().getMonth();
+const stored = JSON.parse(localStorage.getItem("student"));
+
+if (!stored || !stored.student) {
+  alert("Login expired!");
+  window.location.href = "student-login.html";
+}
+
+const studentData = stored.student;
+const studentId = studentData.id;
+const className = studentData.className;
+
+
+console.log("Student ID:", studentId);
+
+// 🔥 FILL PROFILE (FIXED)
+document.getElementById("name").innerText = studentData.name;
+document.getElementById("roll").innerText = studentData.rollNo;
+document.getElementById("class").innerText = studentData.className;
+
+// 🔥 NAVIGATION
+function show(id){
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+// 🔥 LOGOUT
+function logout(){
+  localStorage.removeItem("student");
+  window.location.href = "student-login.html";
+}
+
+/* ================= ATTENDANCE ================= */
+async function loadAttendance() {
+  try {
+    const month = document.getElementById("monthSelect").value;
+
+    const res = await fetch(`${BACKEND_URL}/api/attendance/student/list/${studentId}`);
+
+    if (!res.ok) throw new Error("API not working");
+
+    const data = await res.json();
+
+    const statusMap = {
+      P: "Present",
+      A: "Absent",
+      H: "Holiday"
+    };
+
+    const filtered = data.filter(a => {
+      return new Date(a.date).getMonth() == month;
+    });
+
+    document.getElementById("attendanceData").innerHTML =
+      filtered.length
+        ? filtered.map(a => `
+            <tr>
+              <td>${a.date.split("T")[0]}</td>
+              <td style="
+                color: ${
+                  a.status === "P" ? "#22c55e" :
+                  a.status === "A" ? "#ef4444" :
+                  "#f59e0b"
+                };
+                font-weight:bold;
+              ">
+                ${statusMap[a.status] || a.status}
+              </td>
+            </tr>
+          `).join("")
+        : "<tr><td colspan='2'>No attendance</td></tr>";
+
+  } catch (err) {
+    console.log("Attendance ERROR:", err);
+    document.getElementById("attendanceData").innerHTML =
+      "<tr><td colspan='2'>Error loading</td></tr>";
+  }
+}
+
+/* ================= MARKS ================= */
+async function loadMarks() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/marks/student/${studentId}`);
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      document.getElementById("marksBox").innerHTML =
+        "<tr><td colspan='4'>No marks found 📭</td></tr>";
+      return;
+    }
+
+    document.getElementById("marksBox").innerHTML =
+      data.map(m => {
+        let color = "#22c55e"; // green
+        if (m.marks < m.totalMarks * 0.4) color = "#ef4444"; // red
+        else if (m.marks < m.totalMarks * 0.7) color = "#f59e0b"; // yellow
+
+        return `
+          <tr style="transition:0.3s;">
+            <td>${m.subject}</td>
+            <td>${m.examType.toUpperCase()}</td>
+            <td style="color:${color}; font-weight:bold;">
+              ${m.marks}/${m.totalMarks}
+            </td>
+            <td>${m.suggestion || "-"}</td>
+          </tr>
+        `;
+      }).join("");
+
+  } catch (err) {
+    console.log(err);
+  }
+}
+/* ================= NOTIFICATIONS ================= */
+async function loadNotifications() {
+  try {
+    const res = await fetch(
+      `${BACKEND_URL}/api/hod/notifications/student/${className}`
+    );
+
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      document.getElementById("notifBox").innerHTML =
+        "<p style='opacity:0.7'>No notifications yet 📭</p>";
+      return;
+    }
+
+    document.getElementById("notifBox").innerHTML =
+      data.map(n => `
+        <div style="
+          background: rgba(255,255,255,0.2);
+          padding: 15px;
+          margin: 10px 0;
+          border-radius: 10px;
+        ">
+          <h3>📢 Notification</h3>
+          <p>${n.message}</p>
+
+          ${
+            n.file_path
+              ? `<a href="${BACKEND_URL}/${n.file_path}" target="_blank">📎 File</a>`
+              : ""
+          }
+        </div>
+      `).join("");
+
+    // ✅ 🔥 YE LINE ADD KAR
+    localStorage.setItem("notifSeen", data.length);
+
+  } catch (err) {
+    console.log("Notification error", err);
+  }
+}
+
+setInterval(loadNotifications, 5000);
+
+
+
+/* ================= INIT ================= */
+function init() {
+  loadAttendance();
+  loadMarks();
+  loadNotifications();
+}
+
+init();
+</script>
+</body>
+</html>

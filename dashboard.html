@@ -1,0 +1,1368 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <title>HOD Dashboard - SBMT</title>
+  <style>
+    /* ===== BODY BACKGROUND (ANIMATED) ===== */
+/* ===== BODY ===== */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #b6fbff, #83a4d4);
+  color: #0f172a;
+}
+
+/* ===== LAYOUT ===== */
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ===== SIDEBAR ===== */
+.navbar {
+  width: 230px;
+  background: linear-gradient(180deg, #5fa8d3, #3b82f6);
+  margin: 15px;
+  border-radius: 18px;
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+  height: calc(100vh - 30px);
+}
+
+/* ===== LOGO SECTION ===== */
+.logo-box {
+  text-align: center;
+  margin-bottom: 15px;
+}
+
+/* .logo-box img {
+  width: 70px;
+  margin-bottom: 8px;
+} */
+
+.logo-box h2 {
+  color: white;
+  margin: 0;
+}
+
+/* ===== NAV ITEMS ===== */
+.nav-item {
+  padding: 14px 20px;
+  margin: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.3s;
+  color: white;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateX(6px);
+}
+
+.nav-item.active {
+  background: rgba(255,255,255,0.3);
+  color: #0f172a;
+  font-weight: bold;
+}
+
+/* ===== LOGOUT ===== */
+.logout-container {
+  padding: 20px;
+}
+
+.logout-container button {
+  width: 100%;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  color: white;
+  border: none;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.logout-container button:hover {
+  transform: scale(1.05);
+}
+
+/* ===== MAIN ===== */
+.main {
+  flex: 1;
+  padding: 20px;
+}
+
+/* ===== SECTION ===== */
+.section {
+  display: none;
+}
+
+.section.active {
+  display: block;
+  background: rgba(255,255,255,0.35);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+/* ===== INPUTS ===== */
+input, select {
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+  width: 100%;
+  outline: none;
+  background: rgba(255,255,255,0.7);
+  color: #0f172a;
+}
+
+/* ===== BUTTON ===== */
+button {
+  padding: 10px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+}
+
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th, td {
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  color: white;
+}
+
+tr:hover td {
+  background: #e0f7fa;
+}
+.class-box {
+  background: rgba(255,255,255,0.12);
+  padding: 15px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(10px);
+  transition: 0.3s;
+}
+
+.class-box:hover {
+  transform: scale(1.01);
+}
+
+.class-title {
+  font-size: 18px;
+  margin-bottom: 10px;
+  color: black;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th {
+  background: #3b82f6;
+  color: vla;
+  padding: 10px;
+  text-align: left;
+}
+
+.table td {
+  padding: 8px;
+  background: rgba(255,255,255,0.08);
+}
+
+.table tr:nth-child(even) td {
+  background: rgba(255,255,255,0.15);
+}
+/* ===== STATS ===== */
+.stats-container {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.stat-card {
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(10px);
+  padding: 20px;
+  border-radius: 15px;
+  flex: 1;
+  min-width: 180px;
+  text-align: center;
+}
+
+.stat-card h2 {
+  color: #2563eb;
+  margin: 0;
+}
+
+.logo-box img {
+  width: 75px;
+  height: 75px;
+  border-radius: 10%;
+  object-fit: cover;
+
+  border: 3px solid white;
+
+  box-shadow: 
+    0 0 10px rgba(255,255,255,0.6),
+    0 0 20px rgba(56,189,248,0.7);
+    
+  transition: 0.3s;
+}
+.class-container {
+  display: flex;
+  gap: 15px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+.class-box {
+  min-width: 300px;
+  flex: 0 0 auto;
+}
+
+/* hover effect */
+.logo-box img:hover {
+  transform: scale(1.08);
+}
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+@media (max-width: 1024px) {
+  .wrapper {
+    flex-direction: column;
+  }
+
+  .navbar {
+    width: 100%;
+    height: auto;
+    margin: 0;
+    border-radius: 0;
+    flex-direction: row;
+    overflow-x: auto;
+  }
+
+  .nav-top {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+  }
+
+  .nav-item {
+    white-space: nowrap;
+    padding: 10px;
+    font-size: 14px;
+  }
+
+  .main {
+    padding: 10px;
+  }
+
+  .stats-container {
+    flex-direction: column;
+  }
+
+  table {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 600px) {
+  .logo-box h2 {
+    font-size: 16px;
+  }
+
+  .stat-card {
+    padding: 12px;
+  }
+
+  input, select, button {
+    font-size: 14px;
+  }
+}
+  </style>
+</head>
+
+<body>
+  <div class="wrapper">
+    <!-- Sidebar -->
+    <div class="navbar">
+      <div class="nav-top">
+        <div class="logo-box">
+  <img src="./assets/logo.png" alt="logo">
+  <h2>SBMT</h2>
+</div>
+       <div class="nav-item active" data-section="home">🏠 Dashboard</div>
+<div class="nav-item" data-section="addTeacher">➕ Add Teacher</div>
+<div class="nav-item" data-section="assignTeacher">🧑‍🏫 Assign Teacher</div>
+<div class="nav-item" data-section="teacherList">📋 Teacher List</div>
+<div class="nav-item" data-section="notifications">🔔 Notifications</div>
+<div class="nav-item" data-section="marksView">📊 Marks Viewer</div>
+<div class="nav-item" data-section="attendance">📅 Attendance</div>
+<div class="nav-item" data-section="downloads">📥 Downloads</div>
+        
+      </div>
+
+      <div class="logout-container">
+        <button id="logoutBtn">Logout</button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <!-- Home / Dashboard -->
+      <div id="home" class="section active">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+  <h3>Welcome, HOD!</h3>
+  <h1 style="
+  margin:0;
+  font-size:28px;
+  font-weight:bold;
+  background: linear-gradient(135deg, #2563eb, #0b5101);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 1px;
+">
+  MRS. Yukti Gupta
+</h1>
+</div>
+        <p>Use the left menu to manage teachers.</p>
+        <div class="stats-container">
+          <div class="stat-card">
+            <h2 id="totalTeachers">0</h2>
+            <p>Total Teachers</p>
+          </div>
+          <div class="stat-card">
+            <h2 id="classTeachers">0</h2>
+            <p>Class Teachers</p>
+          </div>
+          <div class="stat-card">
+            <h2 id="subjectTeachers">0</h2>
+            <p>Subject Teachers</p>
+          </div>
+          <div class="stat-card">
+            <h2 id="totalClasses">0</h2>
+            <p>Total Classes</p>
+          </div>
+        </div>
+        <h3 style="margin-top:20px;">📊 Live Attendance Chart</h3>
+<div style="width:100%; max-width:600px; margin-top:20px;">
+<canvas id="attendanceChart" style="height:300px;"></canvas>
+</div>
+<h2>📚 Class - Teacher Mapping</h2>
+
+<div id="classTeacherTable"></div>
+      </div>
+
+      <!-- Add Teacher -->
+      <div id="addTeacher" class="section">
+        <h3>Add Teacher</h3>
+        <input type="text" id="teacherName" placeholder="Teacher Name" />
+        <input type="email" id="teacherEmail" placeholder="Teacher Email" />
+        <input type="text" id="teacherMobile" placeholder="Mobile Number" />
+        <button id="addTeacherBtn">Add Teacher</button>
+      </div>
+
+      <!-- Assign Teacher -->
+      <div id="assignTeacher" class="section">
+        <h3>Assign Teacher</h3>
+        <label><input type="radio" name="roleType" value="classTeacher" checked />
+          Class Teacher</label>
+        <label><input type="radio" name="roleType" value="subjectTeacher" />
+          Subject Teacher</label>
+        <select id="teacherSelect">
+          <option value="">Select Teacher</option>
+        </select>
+        <select id="assignClass">
+          <option value="">Select Class</option>
+          <option value="BCA-1st-Year">BCA 1st Year</option>
+          <option value="BCA-2nd-Year">BCA 2nd Year</option>
+          <option value="BCA-3rd-Year">BCA 3rd Year</option>
+        </select>
+        <input type="text" id="assignSubject" placeholder="Enter Subject (e.g., Maths)" />
+        <button id="assignBtn">Assign</button>
+      </div>
+
+      <!-- Teacher List -->
+      <div id="teacherList" class="section">
+        <h3>All Teachers</h3>
+        <div style="margin-bottom: 10px">
+          <input type="text" id="teacherSearch" placeholder="Search by name..." />
+          <select id="roleFilter">
+            <option value="">All Roles</option>
+            <option value="Class Teacher">Class Teacher</option>
+            <option value="Subject Teacher">Subject Teacher</option>
+          </select>
+        </div>
+        <table id="teacherTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Mobile</th>
+              <th>Role</th>
+              <th>Class</th>
+              <th>Subject</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+      <!-- ================= DOWNLOAD SECTION ================= -->
+<div id="downloads" class="section">
+
+  <h3>📥 Download Center (HOD)</h3>
+
+  <!-- CLASS SELECT -->
+  <select id="downloadClass" onchange="handleDownloadUI()" style="width:100%; padding:10px; margin-bottom:10px;">
+    <option value="">Select Class</option>
+    <option value="BCA-1st-Year">BCA 1st Year</option>
+    <option value="BCA-2nd-Year">BCA 2nd Year</option>
+    <option value="BCA-3rd-Year">BCA 3rd Year</option>
+  </select>
+
+  <!-- REPORT TYPE -->
+  <select id="reportType" onchange="handleDownloadUI()" style="width:100%; padding:10px; margin-bottom:10px;">
+    <option value="">Select Report Type</option>
+    <option value="students">Students</option>
+    <option value="attendance">Attendance</option>
+    <option value="marks">Marks</option>
+  </select>
+
+  <!-- ATTENDANCE DATE -->
+  <div id="attendanceFields" style="display:none; margin-bottom:10px;">
+    <input type="date" id="attDate" style="width:100%; padding:10px;">
+  </div>
+
+  <!-- MARKS EXAM -->
+  <div id="marksFields" style="display:none; margin-bottom:10px;">
+    <select id="marksExam" style="width:100%; padding:10px;">
+      <option value="">Select Test</option>
+      <option value="test1">Test 1</option>
+      <option value="test2">Test 2</option>
+      <option value="test3">Test 3</option>
+      <option value="internal">Internal</option>
+    </select>
+  </div>
+  <!-- DOWNLOAD BUTTONS -->
+<div id="downloadButtons" style="display:none; margin-top:10px;">
+
+  <!-- PDF always -->
+  <button onclick="downloadPDF()" style="width:100%; margin-bottom:10px;">
+    📄 Download PDF
+  </button>
+
+  <!-- Excel only for marks -->
+  <button id="excelBtn" onclick="downloadExcel()" style="width:100%; display:none;">
+    📊 Download Excel
+  </button>
+
+</div>
+
+</div>
+      <!-- Notifications Section -->
+      <div id="notifications" class="section">
+        <h3 class="text-xl font-bold mb-2">Send Notification (HOD)</h3>
+        <input type="text" id="hodMessage" placeholder="Message" class="border p-2 w-full mb-2" />
+        <input type="file" id="hodFile" class="mb-2" />
+        <select id="hodClass" class="border p-2 w-full mb-2">
+          <option value="">All Classes</option>
+          <option value="BCA-1st-Year">BCA 1st Year</option>
+<option value="BCA-2nd-Year">BCA 2nd Year</option>
+<option value="BCA-3rd-Year">BCA 3rd Year</option>
+        </select>
+        <button id="sendHodNotifBtn" class="bg-green-500 text-white px-4 py-2 rounded">Send</button>
+
+        <h3 class="text-lg font-semibold mt-4">Recent Notifications</h3>
+        <ul id="hodNotificationsList" class="mt-2"></ul>
+      </div>
+      <!-- ATTENDANCE VIEW -->
+<div id="attendance" class="section">
+
+  <h3>📅 Attendance Dashboard</h3>
+
+  <!-- FILTER BAR -->
+  <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+
+    <select id="hodAttendanceClass" style="flex:1; padding:10px; border-radius:8px;">
+      <option value="" selected disabled>Select Class</option>
+      <option value="BCA-1st-Year">BCA 1st Year</option>
+      <option value="BCA-2nd-Year">BCA 2nd Year</option>
+      <option value="BCA-3rd-Year">BCA 3rd Year</option>
+    </select>
+
+    <input type="date" id="hodDate" style="flex:1; padding:10px; border-radius:8px;">
+  </div>
+
+  <!-- ACTION BUTTONS -->
+  <div style="display:flex; gap:10px; flex-wrap:wrap; margin-bottom:15px;">
+
+    <button onclick="loadHodAttendance()" style="flex:1;">
+      📋 Load Attendance
+    </button>
+
+    <button onclick="loadHodSummary()" style="flex:1; background:#ff9800;">
+      📊 Summary
+    </button>
+
+    <button onclick="enableEditMode()" style="flex:1; background:#03a9f4;">
+      ✏️ Edit Mode
+    </button>
+
+    <button onclick="saveEditedAttendance()" style="flex:1; background:#4caf50;">
+      💾 Save
+    </button>
+
+  </div>
+
+  <!-- SUMMARY BOX -->
+  <div id="hodSummaryBox"
+       style="background:#fff; padding:12px; border-radius:10px;
+              box-shadow:0 2px 8px rgba(0,0,0,0.1); margin-bottom:15px;">
+
+    <h4 style="margin:0 0 10px 0;">📊 Attendance Summary</h4>
+
+    <table style="width:100%; border-collapse:collapse;">
+      <thead>
+        <tr style="background:#f5f5f5;">
+          <th style="padding:8px;">Total</th>
+          <th>Present</th>
+          <th>Absent</th>
+          <th>Holiday</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr id="summaryRow" style="text-align:center;">
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+          <td>-</td>
+        </tr>
+      </tbody>
+    </table>
+
+  </div>
+
+  <!-- TABLE WRAPPER  -->
+  <div style="max-height:420px; overflow-y:auto; background:white; border-radius:10px;">
+
+    <table style="width:100%; border-collapse:collapse;">
+
+      <!-- HEADER  -->
+      <thead style="position:sticky; top:0; background:#4db6ac; color:white; z-index:1;">
+        <tr>
+          <th style="padding:10px;">SR</th>
+          <th>Name</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+
+      <tbody id="hodAttendanceTable"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+      <!-- MARKS VIEWER SECTION -->
+      <div id="marksView" class="section">
+
+        <h3>📊 Marks Viewer (HOD)</h3>
+
+        <!--  Class Select -->
+        <select id="viewClass">
+          <option value="">Select Class</option>
+          <option value="BCA-1st-Year">BCA 1st Year</option>
+          <option value="BCA-2nd-Year">BCA 2nd Year</option>
+          <option value="BCA-3rd-Year">BCA 3rd Year</option>
+        </select>
+
+        <!--  Exam Select -->
+        <select id="viewExam">
+          <option value="">Select Exam</option>
+          <option value="test1">Test 1</option>
+          <option value="test2">Test 2</option>
+          <option value="test3">Test 3</option>
+          <option value="internal">Internal</option>
+        </select>
+
+        <button onclick="loadMarksView()">Load Marks</button>
+
+        <table border="1" width="100%" id="marksTable"></table>
+      </div>
+
+    </div>
+
+    <script>
+      const BACKEND_URL = "https://sbmt-backend.onrender.com";
+      const API = `${BACKEND_URL}/api/teacher`;
+      
+
+
+      /* ================= NAV ================= */
+  document.querySelectorAll(".nav-item").forEach((item) => {
+  item.addEventListener("click", () => {
+
+    // remove active from all nav items
+    document.querySelectorAll(".nav-item").forEach((i) =>
+      i.classList.remove("active")
+    );
+
+    item.classList.add("active");
+
+    const sec = item.dataset.section;
+
+    if (!sec) {
+      console.warn("⚠️ data-section missing on nav item");
+      return;
+    }
+
+    const target = document.getElementById(sec);
+
+    // safe check
+    if (!target) {
+      console.warn("⚠️ Section not found:", sec);
+      return;
+    }
+
+    // hide all sections
+    document.querySelectorAll(".section").forEach((s) => {
+      if (s) s.classList.remove("active");
+    });
+
+    // show selected
+    target.classList.add("active");
+
+    // ==============================
+    //  IMPORTANT FIX: CHART CALL
+    // ==============================
+    if (sec === "home") {
+      setTimeout(() => {
+        loadChart();
+      }, 200);
+    }
+
+  });
+});
+      /* ================= LOGOUT ================= */
+      document.getElementById("logoutBtn").addEventListener("click", () => {
+        localStorage.removeItem("user");
+        window.location.href = "hod-login.html";
+      });
+
+      /* ================= DASHBOARD STATS ================= */
+      function loadDashboardStats() {
+        const rows = document.querySelectorAll("#teacherTable tbody tr");
+
+        const total = rows.length;
+
+        const classT = Array.from(rows).filter(
+          r => r.cells[3].textContent === "Class Teacher"
+        ).length;
+
+        const subjectT = Array.from(rows).filter(
+          r => r.cells[3].textContent === "Subject Teacher"
+        ).length;
+
+        const classes = Array.from(rows)
+          .map(r => r.cells[4].textContent)
+          .filter((v, i, a) => v !== "-" && a.indexOf(v) === i).length;
+
+        document.getElementById("totalTeachers").innerText = total;
+        document.getElementById("classTeachers").innerText = classT;
+        document.getElementById("subjectTeachers").innerText = subjectT;
+        document.getElementById("totalClasses").innerText = classes;
+      }
+
+      /* ================= ADD TEACHER  ================= */
+      document.getElementById("addTeacherBtn").addEventListener("click", async () => {
+        const name = document.getElementById("teacherName").value.trim();
+        const email = document.getElementById("teacherEmail").value.trim();
+        const mobile = document.getElementById("teacherMobile").value.trim();
+
+        if (!name || !email) return alert("Name & Email required!");
+
+        try {
+          const res = await fetch(`${API}/add`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ name, email, mobile })
+          });
+
+          const data = await res.json();
+
+          if (res.ok) {
+            alert("Teacher added ✅");
+            clearAddTeacherFields();
+            loadTeachers();
+            loadTeacherDropdown();
+          } else {
+            alert(data.message);
+          }
+        } catch (err) {
+          console.log(err);
+          alert("Server error");
+        }
+      });
+
+      function clearAddTeacherFields() {
+        document.getElementById("teacherName").value = "";
+        document.getElementById("teacherEmail").value = "";
+        document.getElementById("teacherMobile").value = "";
+      }
+
+      /* ================= LOAD TEACHERS ================= */
+      async function loadTeachers() {
+        try {
+          const res = await fetch(`${API}/all`);
+          const data = await res.json();
+
+          const tbody = document.querySelector("#teacherTable tbody");
+          tbody.innerHTML = "";
+
+          data.forEach((t) => {
+            tbody.innerHTML += `
+        <tr>
+          <td>${t.name}</td>
+          <td>${t.email}</td>
+          <td>${t.mobile}</td>
+          <td>${t.role}</td>
+          <td>${t.className}</td>
+          <td>${t.subject}</td>
+        </tr>
+      `;
+          });
+
+          loadDashboardStats();
+
+        } catch (err) {
+          console.log(err);
+        }
+      }
+    // ================ class teacher table =========================
+async function loadClassTeacherTable() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/teacher/class-teachers`);
+    const data = await res.json();
+
+    if (!Array.isArray(data) || data.length === 0) {
+      document.getElementById("classTeacherTable").innerHTML =
+        "<p>No data found</p>";
+      return;
+    }
+
+    let html = `<div class="class-container">`;
+
+    data.forEach(cls => {
+      html += `
+        <div class="class-box">
+          <div class="class-title">🎓 ${cls.className}</div>
+
+          <table class="table">
+            <tr>
+              <th>Subject</th>
+              <th>Teacher</th>
+            </tr>
+      `;
+
+      cls.teachers.forEach(t => {
+        html += `
+          <tr>
+            <td>${t.subject}</td>
+            <td>${t.teacherName}</td>
+          </tr>
+        `;
+      });
+
+      html += `</table></div>`;
+    });
+
+   html += `</div>`;
+document.getElementById("classTeacherTable").innerHTML = html;
+
+  } catch (err) {
+    console.log("Table error:", err);
+  }
+}
+let attendanceChartInstance = null;
+
+async function loadChart() {
+  try {
+    const today = new Date().toISOString().split("T")[0];
+
+    const res = await fetch(
+      `${BACKEND_URL}/api/hod/dashboard/attendance-summary?date=${today}`
+    );
+
+    const data = await res.json();
+
+    //  safety check
+    if (!data || Object.keys(data).length === 0) {
+      console.log("⚠️ No chart data found");
+      return;
+    }
+
+    const labels = Object.keys(data);
+
+    const present = labels.map(cls => data[cls]?.present || 0);
+    const total = labels.map(cls => data[cls]?.total || 0);
+
+    const canvas = document.getElementById("attendanceChart");
+
+    if (!canvas) {
+      console.log("❌ Canvas not found");
+      return;
+    }
+
+    const ctx = canvas.getContext("2d");
+
+    // destroy old chart (important)
+    if (attendanceChartInstance instanceof Chart) {
+  attendanceChartInstance.destroy();
+}
+
+    attendanceChartInstance = new Chart(ctx, {
+      type: "bar",
+      data: {
+        labels: labels,
+        datasets: [
+          {
+            label: "Present",
+            data: present,
+            borderWidth: 2,
+            borderRadius: 6
+          },
+          {
+            label: "Total",
+            data: total,
+            borderWidth: 2,
+            borderRadius: 6
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        animation: {
+          duration: 1200,
+          easing: "easeInOutQuart"
+        },
+        plugins: {
+          legend: {
+            labels: {
+              font: {
+                size: 14
+              }
+            }
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 5
+            }
+          }
+        }
+      }
+    });
+
+  } catch (err) {
+    console.log("❌ Chart Error:", err);
+  }
+}
+/* ================= TEACHER DROPDOWN ================= */
+      async function loadTeacherDropdown() {
+        try {
+          const res = await fetch(`${API}/all`);
+          const data = await res.json();
+
+          const select = document.getElementById("teacherSelect");
+          const roleType = document.querySelector('input[name="roleType"]:checked').value;
+
+          select.innerHTML = '<option value="">Select Teacher</option>';
+
+          const uniqueTeachers = new Map();
+
+          // duplicate remove (same teacher multiple rows)
+          data.forEach(t => {
+            if (!uniqueTeachers.has(t._id)) {
+              uniqueTeachers.set(t._id, t);
+            }
+          });
+
+          const teachers = Array.from(uniqueTeachers.values());
+
+          // Class teacher already assigned filter
+          const assignedClassTeachers = new Set();
+          data.forEach(t => {
+            if (t.role === "Class Teacher") {
+              assignedClassTeachers.add(t._id);
+            }
+          });
+
+          teachers.forEach(t => {
+            if (roleType === "classTeacher" && assignedClassTeachers.has(t._id)) return;
+
+            select.innerHTML += `
+        <option value="${t._id}">
+          ${t.name} (${t.email})
+        </option>
+      `;
+          });
+
+        } catch (err) {
+          console.log(err);
+        }
+      }
+
+      /* ================= ASSIGN TEACHER ================= */
+      document.getElementById("assignBtn").addEventListener("click", async () => {
+
+        const teacherId = document.getElementById("teacherSelect").value;
+        const className = document.getElementById("assignClass").value;
+        const subject = document.getElementById("assignSubject").value;
+        const roleType = document.querySelector('input[name="roleType"]:checked').value;
+
+        if (!teacherId || !className) {
+          return alert("Teacher aur Class select karo!");
+        }
+
+        try {
+          const res = await fetch(`${API}/assign`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              teacherId,
+              className: className.trim(),
+              subject: subject.trim(),
+              roleType
+            })
+          });
+
+          const data = await res.json();
+
+          if (!res.ok) {
+            return alert(data.message || "Assign failed ❌");
+          }
+
+          if (roleType === "classTeacher") {
+            alert(
+              "Class Teacher Assigned ✅\n\n" +
+              "Username: " + data.username + "\n" +
+              "Password: " + data.password
+            );
+          } else {
+            alert("Subject Teacher Assigned ✅");
+          }
+
+          loadTeachers();
+loadClassTeacherTable(); 
+
+        } catch (err) {
+          console.log(err);
+          alert("Server error ❌");
+        }
+      });
+
+      /* ================= SEARCH + FILTER ================= */
+      document.getElementById("teacherSearch").addEventListener("input", () => {
+        const search = document.getElementById("teacherSearch").value.toLowerCase();
+        const role = document.getElementById("roleFilter").value;
+
+        const rows = document.querySelectorAll("#teacherTable tbody tr");
+
+        rows.forEach((row) => {
+          const name = row.cells[0].textContent.toLowerCase();
+          const r = row.cells[3].textContent;
+
+          row.style.display =
+            name.includes(search) && (role === "" || r === role)
+              ? ""
+              : "none";
+        });
+      });
+
+      // ======================================= load marks view =========================================
+      async function loadMarksView() {
+        const className = document.getElementById("viewClass").value;
+        const exam = document.getElementById("viewExam").value;
+        console.log("CLASS:", className);
+        console.log("EXAM:", exam);
+        if (!className || !exam) {
+          return alert("Class aur Exam select karo!");
+        }
+
+        try {
+          const res = await fetch(
+            `${BACKEND_URL}/api/hod/marks?className=${className}&exam=${exam}`
+          );
+
+          const data = await res.json();
+
+          const table = document.getElementById("marksTable");
+
+          // Header
+          table.innerHTML = `
+      <tr>
+        <th>SR</th>
+        <th>Name</th>
+        <th>Marks</th>
+        <th>Suggestion</th>
+      </tr>
+    `;
+
+          if (!data.length) {
+            table.innerHTML += `
+        <tr>
+          <td colspan="3">No Data Found</td>
+        </tr>
+      `;
+            return;
+          }
+
+          data.forEach((m, index) => {
+            table.innerHTML += `
+    <tr>
+      <td>${index + 1}</td>
+      <td>${m.studentName}</td>
+      <td>${m.marks}</td>
+      <td style="color: ${m.suggestion?.toLowerCase().includes("good") ? "green" :
+                m.suggestion?.toLowerCase().includes("bad") ? "red" :
+                  "orange"
+              }">
+        ${m.suggestion || "-"}
+      </td>
+    </tr>
+  `;
+          });
+
+        } catch (err) {
+          console.log(err);
+          alert("Error loading marks ❌");
+        }
+      }
+      //-----------------------------------------------------------------------
+
+async function loadHodSummary() {
+  const className = document.getElementById("hodAttendanceClass").value;
+  const date = document.getElementById("hodDate").value;
+
+  if (!className || !date) {
+    return alert("Class aur Date select karo!");
+  }
+
+  const res = await fetch(
+    `${BACKEND_URL}/api/hod/attendance/summary?className=${className}&date=${date}`
+  );
+
+  const data = await res.json();
+
+ document.getElementById("summaryRow").innerHTML = `
+  <td>${data.total || 0}</td>
+  <td style="color:green">${data.present || 0}</td>
+  <td style="color:red">${data.absent || 0}</td>
+  <td style="color:orange">${data.holiday || 0}</td>
+`;
+}
+
+let hodAttendanceData = [];
+let editMode = false;
+async function loadHodAttendance() {
+  const className = document.getElementById("hodAttendanceClass").value;
+  const date = document.getElementById("hodDate").value;
+
+  if (!className || !date) return alert("Select class + date");
+
+  const res = await fetch(
+    `${BACKEND_URL}/api/hod/attendance?className=${className}&date=${date}`
+  );
+
+  const data = await res.json();
+
+  hodAttendanceData = data.records || [];
+
+  renderHodTable();
+}
+
+function renderHodTable() {
+  const tbody = document.getElementById("hodAttendanceTable");
+  tbody.innerHTML = "";
+
+  hodAttendanceData.forEach((r, i) => {
+    tbody.innerHTML += `
+      <tr>
+        <td>${i + 1}</td>
+        <td>${r.name}</td>
+        <td>
+          ${
+            editMode
+              ? `<select onchange="updateStatus('${r.studentId}', this.value)">
+                  <option value="P" ${r.status === "P" ? "selected" : ""}>P</option>
+                  <option value="A" ${r.status === "A" ? "selected" : ""}>A</option>
+                </select>`
+              : r.status
+          }
+        </td>
+      </tr>
+    `;
+  });
+}
+
+function updateStatus(id, value) {
+  hodAttendanceData = hodAttendanceData.map(r =>
+    r.studentId === id ? { ...r, status: value } : r
+  );
+}
+
+function enableEditMode() {
+  editMode = true;
+  renderHodTable();
+}
+
+async function saveEditedAttendance() {
+  const className = document.getElementById("hodAttendanceClass").value;
+  const date = document.getElementById("hodDate").value;
+
+  const res = await fetch(
+    `${BACKEND_URL}/api/hod/attendance/bulk-update`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        className,
+        date,
+        records: hodAttendanceData
+      })
+    }
+  );
+
+  const data = await res.json();
+  alert(data.message);
+
+  editMode = false;
+  loadHodAttendance();
+}
+
+
+function downloadPDF() {
+  const type = document.getElementById("reportType").value;
+  const className = document.getElementById("downloadClass").value;
+  const date = document.getElementById("attDate")?.value;
+  const exam = document.getElementById("marksExam")?.value;
+
+  if (!type || !className) {
+    alert("Class aur Report select karo!");
+    return;
+  }
+
+  let url = "https://sbmt-backend.onrender.com/api/hod/download";
+
+  if (type === "students") {
+    url += `/students/pdf?className=${className}`;
+  }
+
+  if (type === "attendance") {
+    if (!date) return alert("Date select karo!");
+    url += `/attendance/pdf?className=${className}&date=${date}`;
+  }
+
+  if (type === "marks") {
+    if (!exam) return alert("Test select karo!");
+    url += `/marks/pdf?className=${className}&exam=${exam}`;
+  }
+
+  window.open(url, "_blank");
+}
+
+function downloadExcel() {
+  const type = document.getElementById("reportType").value;
+  const className = document.getElementById("downloadClass").value;
+  const date = document.getElementById("attDate")?.value;
+  const exam = document.getElementById("marksExam")?.value;
+
+  if (!type || !className) {
+    alert("Class aur Report select karo!");
+    return;
+  }
+
+  let url = "https://sbmt-backend.onrender.com/api/hod/download";
+
+  if (type === "students") {
+    url += `/students/excel?className=${className}`;
+  }
+
+  if (type === "attendance") {
+    if (!date) return alert("Date select karo!");
+    url += `/attendance/excel?className=${className}&date=${date}`;
+  }
+
+  if (type === "marks") {
+    if (!exam) return alert("Test select karo!");
+    url += `/marks/excel?className=${className}&exam=${exam}`;
+  }
+
+  window.open(url, "_blank");
+}
+
+function handleDownloadUI() {
+  const className = document.getElementById("downloadClass").value;
+  const type = document.getElementById("reportType").value;
+
+  const att = document.getElementById("attendanceFields");
+  const marks = document.getElementById("marksFields");
+  const btns = document.getElementById("downloadButtons");
+  const excelBtn = document.getElementById("excelBtn");
+
+  // reset
+  att.style.display = "none";
+  marks.style.display = "none";
+  btns.style.display = "none";
+  excelBtn.style.display = "none";
+
+  if (!className || !type) return;
+
+  // show dependent fields
+  if (type === "attendance") {
+    att.style.display = "block";
+  }
+
+  if (type === "marks") {
+    marks.style.display = "block";
+    excelBtn.style.display = "block"; 
+  }
+
+  // show buttons (always PDF)
+  btns.style.display = "block";
+}
+
+
+/* ================= SEND HOD NOTIFICATION ================= */
+document.getElementById("sendHodNotifBtn").addEventListener("click", async () => {
+  const message = document.getElementById("hodMessage").value.trim();
+  const file = document.getElementById("hodFile").files[0];
+  const className = document.getElementById("hodClass").value;
+
+  if (!message) return alert("Message likho!");
+
+  try {
+    const formData = new FormData();
+    formData.append("message", message);
+    formData.append("className", className); // ✅ FIXED
+
+    if (file) {
+      formData.append("file", file);
+    }
+
+    const res = await fetch(`${BACKEND_URL}/api/hod/notification`, { // ✅ FIXED
+      method: "POST",
+      body: formData
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) return alert(data.message || "Error");
+
+    alert("Notification sent ✅");
+
+    // clear fields
+    document.getElementById("hodMessage").value = "";
+    document.getElementById("hodFile").value = "";
+    document.getElementById("hodClass").value = "";
+
+    loadHodNotifications(); // optional
+
+  } catch (err) {
+    console.log(err);
+    alert("Error sending notification");
+  }
+});
+
+
+/* ================= LOAD HOD NOTIFICATIONS ================= */
+async function loadHodNotifications() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/hod/notifications`);
+    const data = await res.json();
+
+    // 🔥 FIX (important)
+    const notifications = data.notifications || data || [];
+
+    const list = document.getElementById("hodNotificationsList");
+
+    if (!notifications.length) {
+      list.innerHTML = "<li>No notifications found</li>";
+      return;
+    }
+
+    list.innerHTML = notifications.map(n => `
+      <li style="
+        background:#fff;
+        padding:12px;
+        border-radius:10px;
+        margin-bottom:10px;
+        box-shadow:0 2px 6px rgba(0,0,0,0.1);
+      ">
+        📢 ${n.message}
+
+        ${
+          n.file_path
+            ? `<br><a href="${BACKEND_URL}/${n.file_path}" target="_blank">📎 View File</a>`
+            : ""
+        }
+      </li>
+    `).join("");
+
+  } catch (err) {
+    console.log("Notification error", err);
+  }
+}
+      /* ================= INITIAL LOAD ================= */
+      loadTeachers();
+      loadTeacherDropdown();
+      loadClassTeacherTable();
+      loadChart();
+setInterval(loadChart, 30000);
+    </script>
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</body>
+
+</html>

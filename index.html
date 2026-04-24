@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SBMT Portal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(-45deg, #83a4d4, #b6fbff, #6366f1, #38bdf8);
+      background-size: 400% 400%;
+      animation: bg 10s ease infinite;
+    }
+
+    @keyframes bg {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      text-align: center;
+      background: rgba(255,255,255,0.2);
+      padding: 40px;
+      border-radius: 20px;
+      backdrop-filter: blur(15px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    }
+
+    h1 {
+      color: #0f172a;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      display: block;
+      width: 200px;
+      margin: 10px auto;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: bold;
+      transition: 0.3s;
+      color: white;
+    }
+
+    .hod { background: #ef4444; }
+    .teacher { background: #3b82f6; }
+    .student { background: #10b981; }
+
+    .btn:hover {
+      transform: scale(1.05);
+      filter: brightness(1.1);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+    <h1>Welcome to SBMT Portal</h1>
+
+    <button class="btn hod" onclick="go('hod')">HOD Login</button>
+    <button class="btn teacher" onclick="go('teacher')">Teacher Login</button>
+    <button class="btn student" onclick="go('student')">Student Login</button>
+  </div>
+
+  <script>
+    function go(role) {
+      window.location.href = role + "-login.html";
+    }
+  </script>
+
+</body>
+</html>

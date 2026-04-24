@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Teacher Login - SBMT</title>
+
+<style>
+/* ===== BODY ===== */
+body {
+  margin: 0;
+  font-family: Arial;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: linear-gradient(to right, #b6fbff, #83a4d4);
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+/* ===== LOGIN CARD ===== */
+.box {
+  background: rgba(255,255,255,0.4);
+  backdrop-filter: blur(12px);
+  padding: 35px 30px;
+  border-radius: 18px;
+  width: 320px;
+  max-width: 100%;
+
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+  animation: fadeIn 0.7s ease;
+}
+
+/* ===== LOGO ===== */
+.logo {
+  display: block;
+  margin: 0 auto 10px;
+  width: 70px;
+  height: 70px;
+  border-radius: 10%;
+  object-fit: cover;
+  border: 3px solid white;
+  transition: 0.3s;
+}
+
+.logo:hover {
+  transform: scale(1.08);
+}
+
+/* ===== TITLE ===== */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #0f172a;
+}
+
+/* ===== INPUT ===== */
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: none;
+  outline: none;
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.8);
+  transition: 0.3s;
+}
+
+input:focus {
+  background: white;
+  box-shadow: 0 0 8px rgba(56,189,248,0.5);
+}
+
+/* ===== BUTTON ===== */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: none;
+
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+/* ===== HOME BUTTON ===== */
+.home-btn {
+  position: fixed;
+  top: 15px;
+  left: 15px;
+
+  width: 100px;
+  height: 38px;
+
+  background: #1565c0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+
+  font-size: 14px;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+  transition: 0.25s ease;
+  z-index: 1000;
+}
+
+.home-btn:hover {
+  background: #0d47a1;
+  transform: scale(1.05);
+}
+
+/* ===== RESPONSIVE (PHONE LOOK) ===== */
+@media (max-width: 480px) {
+  .box {
+    width: 95%;
+    padding: 25px 20px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  input, button {
+    font-size: 14px;
+    padding: 10px;
+  }
+
+  .home-btn {
+    width: 85px;
+    height: 34px;
+    font-size: 12px;
+  }
+}
+
+/* ===== ANIMATION ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HOME BUTTON -->
+<button class="home-btn" onclick="goHome()">⬅ Home</button>
+
+<div class="box">
+
+  <img src="./assets/logo.png" class="logo" />
+
+  <h2>Teacher Login</h2>
+
+  <input type="text" id="username" placeholder="Username" />
+  <input type="password" id="password" placeholder="Password" />
+
+  <button onclick="loginTeacher()">Login</button>
+
+</div>
+
+<script>
+function goHome() {
+  window.location.href = "index.html";
+}
+
+async function loginTeacher() {
+  const username = document.getElementById("username").value;
+  const password = document.getElementById("password").value;
+
+  try {
+    const res = await fetch("https://sbmt-backend.onrender.com/api/teacher/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ username, password }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message);
+      return;
+    }
+
+    localStorage.clear();
+    localStorage.setItem("token", data.token);
+    localStorage.setItem("user", JSON.stringify(data.teacher));
+
+    const className = data.teacher?.className || data.className || "";
+    localStorage.setItem("className", className);
+
+    window.location.href = "teacher-dashboard.html";
+
+  } catch (err) {
+    console.log(err);
+    alert("Server error");
+  }
+}
+</script>
+
+</body>
+</html>

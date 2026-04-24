@@ -1,0 +1,1518 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>SBMT ERP Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+/* ===== BODY ===== */
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(to right, #b6fbff, #83a4d4);
+  color: #0f172a;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+  width: 220px;
+  height: calc(100vh - 30px);
+  position: fixed;
+  margin: 15px;
+  border-radius: 18px;
+
+  background: linear-gradient(180deg, #5fa8d3, #3b82f6);
+  color: white;
+
+  padding-top: 20px;
+
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+
+  display: flex;
+  flex-direction: column;
+
+  /* 🔥 animation */
+  animation: slideIn 0.6s ease;
+}
+
+/* ===== SIDEBAR TITLE ===== */
+.sidebar h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* ===== SIDEBAR BUTTONS ===== */
+.sidebar button {
+  width: 90%;
+  margin: 6px auto;
+  padding: 12px;
+  background: transparent;
+  border: none;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: 0.3s;
+}
+
+.sidebar button:hover {
+  background: rgba(255,255,255,0.2);
+  transform: translateX(6px);
+}
+
+.sidebar button:active {
+  transform: scale(0.95);
+}
+
+/* ===== MAIN ===== */
+.main {
+  margin-left: 250px;
+  padding: 20px;
+  animation: fadeIn 0.6s ease;
+}
+
+/* ===== SECTION ===== */
+.section {
+  display: none;
+  opacity: 0;
+  transform: translateY(10px);
+  transition: 0.3s;
+}
+
+.section.active {
+  display: block;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== CARD ===== */
+.card {
+  background: rgba(255,255,255,0.5);
+  backdrop-filter: blur(10px);
+  padding: 15px;
+  margin-bottom: 12px;
+  border-radius: 15px;
+
+  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* ===== INPUT ===== */
+input,
+select {
+  padding: 10px;
+  margin-top: 8px;
+  width: 100%;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+
+  background: rgba(255,255,255,0.8);
+}
+
+/* ===== BUTTON ===== */
+button {
+  padding: 10px;
+  margin-top: 8px;
+  width: 100%;
+  border-radius: 8px;
+  border: none;
+  font-size: 12px;
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  color: white;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
+/* ===== TABLE ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+th {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(135deg, #38bdf8, #6366f1);
+  color: white;
+  padding: 8px;
+}
+
+td {
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 6px;
+}
+
+/* ===== SMALL BUTTON ===== */
+.small-btn {
+  font-size: 10px;
+  padding: 3px 6px;
+  margin: 0;
+}
+
+/* ===== HOME CARD ===== */
+.home-card {
+  padding: 20px;
+}
+
+.home-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.home-left,
+.home-center,
+.home-right {
+  flex: 1;
+}
+
+.home-center {
+  text-align: center;
+}
+
+.home-right {
+  text-align: right;
+  font-weight: bold;
+}
+
+/* ===== LOGO ===== */
+.home-logo {
+  height: 90px;
+  border-radius: 10%;
+  border: 3px solid white;
+
+  animation: float 3s ease-in-out infinite;
+  transition: 0.3s;
+}
+
+.home-logo:hover {
+  transform: scale(1.08);
+}
+/* DASHBOARD GRID */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin-top: 15px;
+}
+
+/* SMALL CARDS */
+.dash-card {
+  background: rgba(255,255,255,0.7);
+  padding: 15px;
+  border-radius: 12px;
+  text-align: center;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.dash-card:hover {
+  transform: translateY(-5px);
+}
+
+/* NUMBERS */
+.dash-card p {
+  font-size: 22px;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+/* ===== FLOATING BUTTONS ===== */
+.fab-container {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+
+  z-index: 999;
+}
+
+/* BUTTON STYLE */
+.fab-btn {
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+
+  font-size: 22px;
+  border: none;
+  color: white;
+
+  cursor: pointer;
+
+  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+  transition: 0.3s;
+}
+
+/* COLORS */
+.fab-btn.add {
+  background: linear-gradient(135deg, #10b981, #059669);
+}
+
+.fab-btn.attend {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+/* HOVER */
+.fab-btn:hover {
+  transform: scale(1.1);
+}
+
+.fab-btn:active {
+  transform: scale(0.95);
+}
+
+/* .dash-card {
+  transition: 0.3s;
+  border-radius: 14px;
+} */
+
+.dash-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.dashboard-grid {
+  margin-top: 20px;
+}
+/* ================= RESPONSIVE DESIGN ================= */
+
+/* TABLET + MOBILE */
+@media (max-width: 1024px) {
+
+  .sidebar {
+    width: 200px;
+    margin: 10px;
+  }
+
+  .main {
+    margin-left: 230px;
+  }
+}
+
+/* MOBILE */
+@media (max-width: 768px) {
+
+  body {
+    flex-direction: column;
+  }
+
+  /* SIDEBAR TOP BAR STYLE */
+  .sidebar {
+    position: relative;
+    width: 95%;
+    height: auto;
+    margin: 10px auto;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    padding: 10px;
+  }
+
+  .sidebar button {
+    width: auto;
+    margin: 5px;
+    padding: 8px 10px;
+    font-size: 12px;
+    text-align: center;
+  }
+
+  /* MAIN FULL WIDTH */
+  .main {
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  /* HOME HEADER STACK */
+  .home-header {
+    flex-direction: column;
+    text-align: center;
+    gap: 10px;
+  }
+
+  .home-right {
+    text-align: center;
+  }
+
+  /* DASHBOARD GRID */
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  /* TABLE SCROLL FIX */
+  table {
+    font-size: 11px;
+  }
+
+  th, td {
+    padding: 5px;
+  }
+
+  /* FLOAT BUTTON SMALL */
+  .fab-btn {
+    width: 45px;
+    height: 45px;
+    font-size: 18px;
+  }
+}
+
+/* SMALL MOBILE */
+@media (max-width: 480px) {
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .login-card, .card {
+    width: 95%;
+  }
+
+  input, select, button {
+    font-size: 13px;
+  }
+}
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-6px); }
+  100% { transform: translateY(0px); }
+}
+      
+td, th {
+  padding: 6px;
+  font-size: 12px;
+}
+
+    </style>
+  </head>
+
+  <body>
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <h2>SBMT</h2>
+
+      <button onclick="show('home')">🏠 Home</button>
+      <button onclick="show('add')">➕ Add Student</button>
+      <button onclick="show('list')">📋 Student List</button>
+      <button onclick="show('attendance')">📅 Attendance</button>
+      <button onclick="show('marks')">📊 Marks</button>
+      <button onclick="show('marksList')">📊 Marks List</button>
+      <button onclick="show('download')">📥 Student Reports</button>
+      <button onclick="show('password')">🔒Password</button>
+      <button onclick="logout()">🚪 Logout</button>
+    </div>
+
+      <!-- MAIN -->
+  <div class="main">
+    <!-- HOME -->
+    <div id="home" class="section active card home-card">
+      <!-- TOP BAR INSIDE CARD -->
+      <div class="home-header">
+        <!-- LEFT: LOGO -->
+        <div class="home-left">
+          <img src="./assets/logo.png" class="home-logo" alt="SBMT Logo">
+        </div>
+        <!-- CENTER: TITLE -->
+        <div class="home-center">
+          <h2>Welcome to SBMT </h2>
+        </div>
+        <!-- RIGHT: LIVE CLASS -->
+        <div class="home-right">
+          Class: <span id="liveClass">--</span>
+        </div>
+      </div>
+      <!-- 🔥 DASHBOARD BELOW -->
+<div class="dashboard-grid">
+
+  <!-- TOTAL STUDENTS -->
+  <div class="dash-card">
+    <h4>Total Students</h4>
+    <p id="totalStudents">0</p>
+  </div>
+
+  <!-- PRESENT -->
+  <div class="dash-card">
+    <h4>Present</h4>
+    <p id="presentCount">0</p>
+  </div>
+
+  <!-- ABSENT -->
+  <div class="dash-card">
+    <h4>Absent</h4>
+    <p id="absentCount">0</p>
+  </div>
+
+  <!-- TOP STUDENTS -->
+  <div class="dash-card">
+    <h4>Top Attendance</h4>
+    <p id="topStudents">--</p>
+  </div>
+
+</div>
+    </div>
+
+
+<!-- 🔥 FLOATING QUICK ACTIONS -->
+<div class="fab-container">
+
+  <button class="fab-btn add" onclick="show('add')">
+    ➕
+  </button>
+
+  <button class="fab-btn attend" onclick="show('attendance')">
+    📅
+  </button>
+
+</div>
+      
+
+      <!-- ADD STUDENT -->
+      <div id="add" class="section card">
+        <h3>Add Student</h3>
+
+        <input id="name" placeholder="Name" />
+        <input id="fatherName" placeholder="Father Name" />
+        <input id="mobile" placeholder="Mobile" />
+
+        <!-- ✅ NEW FIELDS -->
+        <select id="gender">
+          <option value="">Gender</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+
+        <input type="date" id="dob" />
+
+        <h4 id="classTitle"></h4>
+
+        <button onclick="addStudent()">Add Student</button>
+      </div>
+
+      <!-- STUDENT LIST -->
+      <div id="list" class="section card">
+        <h3>Student List</h3>
+        <table>
+          <thead>
+            <tr>
+  <th>SR No</th>
+  <th>Name</th>
+  <th>Father Name</th>
+  <th>Date of Birth</th>
+  <th>Class</th>
+</tr>
+          </thead>
+          <tbody id="studentTableBody"></tbody>
+        </table>
+      </div>
+
+
+
+
+
+
+<div id="attendance" class="section card">
+  <h2>📅 Attendance System</h2>
+
+  <!-- TOP CONTROLS -->
+  <div style="display:flex; gap:6px; flex-wrap:wrap; margin:10px 0;">
+
+  <input type="date" id="datePicker" style="flex:1; min-width:120px;">
+
+  <button onclick="loadAttendance()" style="flex:1;">📥 Load</button>
+
+  <button onclick="markHoliday()" style="flex:1; background:#f59e0b;">
+    🎉 Holiday
+  </button>
+
+  <button onclick="saveAttendance()" style="flex:1; background:#10b981;">
+    💾 Save
+  </button>
+
+  <button onclick="markAllPresent()" style="flex:1; background:#6366f1;">
+    ✅ All
+  </button>
+
+</div>
+<!---------------------------- attendance summaery -------------------------------------- -->
+<div id="attendanceSummary" style="
+  display:flex;
+  gap:10px;
+  margin-top:10px;
+  font-weight:bold;
+">
+  <div>👨‍🎓 Total: <span id="totalCount">0</span></div>
+  <div style="color:green;">✅ Present: <span id="presentCount">0</span></div>
+  <div style="color:red;">❌ Absent: <span id="absentCount">0</span></div>
+</div>
+  <!-- 🔥 NEW: SEARCH -->
+<input 
+  type="text" 
+  id="attendanceSearch" 
+  placeholder="Search by Name or SR No (e.g. ganesh,1,3)" 
+  oninput="filterAttendance()"
+/>
+
+  <!-- 🔥 NEW: SCROLLABLE TABLE -->
+  <div style="max-height:500px; overflow-y:auto; margin-top:10px; background:white; border-radius:10px;">
+
+    <table style="width:100%; border-collapse:collapse;">
+      
+      <thead style="position:sticky; top:0; background:#38bdf8; color:white;">
+        <tr>
+          <th>Sr No</th>
+          <th>Name</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="attendanceTable"></tbody>
+
+    </table>
+
+  </div>
+</div>
+<!-- DOWNLOAD SECTION -->
+<div id="download" class="section card">
+
+  <!-- TOP LEFT HEADING -->
+  <h2 style="text-align:left; margin-bottom:10px;">
+    Download Student Report
+  </h2>
+
+  <!-- FULL CLASS DOWNLOAD -->
+  <button onclick="downloadClass()" style="margin-bottom:10px;">
+    Download Full Class PDF
+  </button>
+
+  <!-- SEARCH BOX -->
+  <input
+    type="text"
+    id="searchStudent"
+    placeholder="Search student by name..."
+    oninput="filterStudents()"
+  />
+
+ 
+  <!-- STUDENT LIST TABLE -->
+  <div style="margin-top:15px; overflow:auto;">
+
+    <table style="width:100%; border-collapse: collapse; font-size:12px;">
+      <thead>
+        <tr style="background:#007bff; color:white;">
+          <th style="padding:6px;">Name</th>
+          <th style="padding:6px;">Class</th>
+          <th style="padding:6px;">Action</th>
+        </tr>
+      </thead>
+
+      <tbody id="studentListTable"></tbody>
+
+    </table>
+
+  </div>
+
+</div>
+<div id="password" class="section card">
+  <h3>🔒 Change Password</h3>
+
+  <input type="password" id="oldPassword" placeholder="Old Password" />
+
+  <input type="password" id="newPassword" placeholder="New Password" />
+
+  <button onclick="changePassword()">Update Password</button>
+</div>
+
+ 
+      <!-- MARKS -->
+      <div id="marks" class="section card">
+        <h3>📊 Marks Entry System</h3>
+
+        <div class="card">
+          <select id="examType">
+            <option value="">Select Exam</option>
+            <option value="test1">Test 1</option>
+            <option value="test2">Test 2</option>
+            <option value="test3">Test 3</option>
+            <option value="internal">Internal</option>
+          </select>
+
+          <input id="subject" placeholder="Subject (e.g. Maths)" />
+          <input id="totalMarks" type="number" placeholder="Total Marks" />
+
+          <button onclick="loadMarksGrid()">Load Students</button>
+          <button onclick="saveMarks()">Save Marks</button>
+        </div>
+
+        <div style="overflow: auto; max-height: 500px; margin-top: 10px">
+          <table id="marksGrid"></table>
+        </div>
+      </div>
+      <!-- MARKS VIEWER -->
+      <div id="marksList" class="section card">
+        <h3>📊 Marks Viewer</h3>
+
+        <select id="viewExam">
+          <option value="">Select Exam</option>
+          <option value="test1">Test 1</option>
+          <option value="test2">Test 2</option>
+          <option value="test3">Test 3</option>
+          <option value="internal">Internal</option>
+        </select>
+
+        <button onclick="loadMarksView()">Get Marks List</button>
+
+        <div style="overflow: auto; max-height: 500px; margin-top: 10px">
+          <table border="1" width="100%" id="marksViewTable"></table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+/* NAV */
+let currentAttendance = null;
+document.getElementById("liveClass").innerText =
+      localStorage.getItem("className") || "Not Assigned";
+  
+
+      /* DATA */
+      let students = [];
+      
+      let allStudents = [];
+
+      const teacherData = JSON.parse(localStorage.getItem("user"));
+
+if (!teacherData || !teacherData.className) {
+  alert("❌ Class not assigned to this teacher");
+  console.log("Teacher missing class:", teacherData);
+  throw new Error("Class not assigned");
+}
+
+const className = teacherData.className;
+
+if (!className) {
+  alert("❌ Class not assigned to this teacher");
+  console.log("Teacher missing class:", teacher);
+
+  throw new Error("Class not assigned");
+}
+
+      /* ADD STUDENT */
+     async function addStudent() {
+  const name = document.getElementById("name").value;
+  const fatherName = document.getElementById("fatherName").value;
+  const mobile = document.getElementById("mobile").value;
+  const gender = document.getElementById("gender").value;
+  const dob = document.getElementById("dob").value;
+
+  // validation
+  if (!name || !fatherName) {
+    alert("Name and Father Name required ❌");
+    return;
+  }
+
+  try {
+    const res = await fetch("https://sbmt-backend.onrender.com/api/students/add", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+  name,
+  fatherName,
+  mobile,
+  gender,
+  dob
+})
+    });
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(data.message || "Student Saved ✅");
+
+      // 🔥 CLEAR FORM
+      document.getElementById("name").value = "";
+      document.getElementById("fatherName").value = "";
+      document.getElementById("mobile").value = "";
+      document.getElementById("gender").value = "";
+      document.getElementById("dob").value = "";
+
+      // 🔥 REFRESH LIST
+      loadStudents();
+    } else {
+      alert(data.msg || data.message || "Error ❌");
+    }
+
+  } catch (err) {
+    console.log("ADD STUDENT ERROR:", err);
+    alert("Server error ❌");
+  }
+}
+
+      //================================= LOAD STUDENTS ========================================
+     async function loadStudents() {
+  try {
+    const res = await fetch("https://sbmt-backend.onrender.com/api/students", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    });
+
+    const data = await res.json();
+
+    students = Array.isArray(data) ? data : [];
+
+    // 🔥 SORT HERE
+    students.sort((a, b) =>
+      (a.name || "").localeCompare(b.name || "")
+    );
+
+    const tableBody = document.getElementById("studentTableBody");
+    tableBody.innerHTML = "";
+
+    students.forEach((s, index) => {
+      tableBody.innerHTML += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${s.name}</td>
+          <td>${s.fatherName}</td>
+          <td>${s.dob ? new Date(s.dob).toLocaleDateString("en-GB") : "-"}</td>
+          <td>${s.className}</td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.log("LOAD STUDENTS ERROR:", err);
+  }
+}
+
+//===================================================== attendance ======================================
+let attendanceData = [];
+let originalAttendance = [];   // 🔥 original data save
+// =========================
+// ✅ helper (IST safe date)
+// =========================
+function getTodayDate() {
+  const d = new Date();
+  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+  return d.toISOString().split("T")[0];
+}
+
+// =========================
+// 📥 LOAD ATTENDANCE
+// =========================
+async function loadAttendance() {
+  const date = document.getElementById("datePicker").value;
+  const today = getTodayDate();
+
+  if (date !== today) {
+    alert("❌ Only today's attendance allowed");
+    return;
+  }
+
+  const res = await fetch("https://sbmt-backend.onrender.com/api/attendance/open", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+    body: JSON.stringify({ date }),
+  });
+
+  const data = await res.json();
+
+  // 🔥 SORT ALPHABETICALLY
+  originalAttendance = (data.records || []).sort((a, b) =>
+    (a.name || "").localeCompare(b.name || "")
+  );
+
+  attendanceData = [...originalAttendance];
+
+  renderTable({ status: "MARKED", records: attendanceData });
+}
+
+// =========================
+// 🧾 RENDER TABLE
+// =========================
+function renderTable(fullData) {
+  const tbody = document.getElementById("attendanceTable");
+  tbody.innerHTML = "";
+
+  attendanceData.forEach((s) => {
+    const originalIndex = originalAttendance.findIndex(
+      (o) => o.studentId === s.studentId
+    );
+
+    const row = document.createElement("tr");
+
+    const color =
+      s.status === "P"
+        ? "lightgreen"
+        : s.status === "A"
+        ? "salmon"
+        : "";
+
+    row.style.background = color;
+
+    row.innerHTML = `
+      <td>${originalIndex + 1}</td>   <!-- 🔥 REAL SR NO -->
+      <td>${s.name}</td>
+      <td>${s.status}</td>
+      <td>
+  <div style="display:flex; gap:4px; justify-content:center;">
+    <button class="small-btn" style="background:#22c55e;" onclick="mark('${s.studentId}', 'P')">P</button>
+    <button class="small-btn" style="background:#ef4444;" onclick="mark('${s.studentId}', 'A')">A</button>
+  </div>
+</td>
+    `;
+
+    tbody.appendChild(row);
+  });
+  updateSummary();
+}
+// =========================
+// ✏️ MARK ATTENDANCE
+// =========================
+function mark(id, status) {
+  // 🔥 sirf current filtered list me update karo
+  attendanceData = attendanceData.map((s) =>
+    s.studentId === id ? { ...s, status } : s
+  );
+
+  // 🔥 original list bhi update ho taki SR no / data stable rahe
+  originalAttendance = originalAttendance.map((s) =>
+    s.studentId === id ? { ...s, status } : s
+  );
+
+  // ❌ refresh / reload mat karo
+  renderTable({ status: "MARKED", records: attendanceData });
+}
+
+// =========================
+// 💾 SAVE ATTENDANCE
+// =========================
+async function saveAttendance() {
+  const date = document.getElementById("datePicker").value;
+  const today = getTodayDate();
+
+  if (date !== today) {
+    alert("❌ Cannot save past/future attendance");
+    return;
+  }
+
+  const res = await fetch("https://sbmt-backend.onrender.com/api/attendance/save", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+    body: JSON.stringify({
+      date,
+      records: attendanceData,
+    }),
+  });
+
+  const data = await res.json();
+  alert(data.msg);
+
+  loadAttendance();
+  loadDashboard(); // 🔥 dashboard refresh
+}
+
+// =========================
+// 🎉 HOLIDAY
+// =========================
+async function markHoliday() {
+  const date = document.getElementById("datePicker").value;
+  const today = getTodayDate();
+
+  if (date !== today) {
+    alert("❌ Holiday only allowed for today");
+    return;
+  }
+
+  const reason = prompt("Enter holiday reason:");
+  if (!reason) return;
+
+  const res = await fetch("https://sbmt-backend.onrender.com/api/attendance/holiday", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+    body: JSON.stringify({
+      date,
+      reason,
+    }),
+  });
+
+  const data = await res.json();
+  alert(data.msg);
+
+  loadAttendance();
+}
+
+function filterAttendance() {
+  const value = document
+    .getElementById("attendanceSearch")
+    .value.toLowerCase();
+
+  if (!value) {
+    attendanceData = [...originalAttendance];
+    renderTable({ status: "MARKED", records: attendanceData });
+    return;
+  }
+
+  const keywords = value.split(",").map(v => v.trim());
+
+  attendanceData = originalAttendance.filter((s, index) => {
+    return keywords.some((key) => {
+      return (
+        s.name.toLowerCase().includes(key) ||
+        (index + 1).toString() === key
+      );
+    });
+  });
+
+  renderTable({ status: "MARKED", records: attendanceData });
+}
+
+// function renderFilteredTable(list) {
+//   const tbody = document.getElementById("attendanceTable");
+//   tbody.innerHTML = "";
+
+//   list.forEach((s, index) => {
+//     tbody.innerHTML += `
+//       <tr>
+//         <td>${index + 1}</td>
+//         <td>${s.name}</td>
+//         <td>${s.status || "-"}</td>
+//         <td>${s.srNo}</td>
+//         <td>
+//           <button onclick="mark('${s.studentId}','P')">P</button>
+//           <button onclick="mark('${s.studentId}','A')">A</button>
+//         </td>
+//       </tr>
+//     `;
+//   });
+// }
+
+function markAllPresent() {
+  attendanceData = attendanceData.map(s => ({
+    ...s,
+    status: "P"
+  }));
+
+  renderTable({
+    status: "MARKED",
+    records: attendanceData
+  });
+}
+
+//-----------------------
+// summary
+//--------------------
+function updateSummary() {
+  const total = originalAttendance.length;
+
+  const present = originalAttendance.filter(s => s.status === "P").length;
+  const absent = originalAttendance.filter(s => s.status === "A").length;
+
+  document.getElementById("totalCount").innerText = total;
+  document.getElementById("presentCount").innerText = present;
+  document.getElementById("absentCount").innerText = absent;
+}
+//========================================================== save marks ===============================
+
+async function saveMarks() {
+
+  const examType = document.getElementById("examType").value;
+  const subject = document.getElementById("subject").value;
+  const totalMarks = document.getElementById("totalMarks").value;
+
+  if (!examType || !subject || !totalMarks) {
+    alert("All fields required ❌");
+    return;
+  }
+
+  // 🔥 collect marks + suggestion
+  let marks = [];
+
+  students.forEach((s) => {
+    const marksInput = document.getElementById(`marks-${s._id}`);
+    const suggestionInput = document.getElementById(`suggestion-${s._id}`);
+
+    marks.push({
+      studentId: s._id,
+      marksObtained: marksInput?.value || 0,
+      suggestion: suggestionInput?.value || ""
+    });
+  });
+
+  try {
+    const res = await fetch("https://sbmt-backend.onrender.com/api/marks/save", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+      body: JSON.stringify({
+        classId: className,   // 🔥 IMPORTANT (classId, not className)
+        examType,
+        subject,
+        totalMarks,
+        marks
+      }),
+    });
+
+    const data = await res.json();
+
+    console.log("MARKS RESPONSE:", data);
+
+    if (res.ok) {
+      alert("Marks Saved ✅");
+    } else {
+      alert(data.message || "Error ❌");
+    }
+
+  } catch (err) {
+    console.log("SAVE MARKS ERROR:", err);
+  }
+}
+//------------------------- grid load marks ------------------------------------- 
+
+async function loadMarksGrid() {
+  const examType = document.getElementById("examType").value;
+  const subject = document.getElementById("subject").value;
+  const totalMarks = document.getElementById("totalMarks").value;
+
+  if (!examType || !subject || !totalMarks) {
+    alert("Fill all fields ❌");
+    return;
+  }
+
+  try {
+    const res = await fetch("https://sbmt-backend.onrender.com/api/students", {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token"),
+      },
+    });
+
+    const data = await res.json();
+
+    // 🔥 alphabetical sort
+    students = data.sort((a, b) =>
+      (a.name || "").localeCompare(b.name || "")
+    );
+
+    const table = document.getElementById("marksGrid");
+
+    let html = `
+      <tr>
+        <th>SR</th>
+        <th>Name</th>
+        <th>Marks</th>
+        <th>Suggestion</th>
+      </tr>
+    `;
+
+    students.forEach((s, index) => {
+      html += `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${s.name}</td>
+          <td>
+            <input type="number" id="marks-${s._id}" placeholder="Marks"/>
+          </td>
+          <td>
+            <input type="text" id="suggestion-${s._id}" placeholder="Suggestion"/>
+          </td>
+        </tr>
+      `;
+    });
+
+    table.innerHTML = html;
+
+  } catch (err) {
+    console.log("LOAD MARKS GRID ERROR:", err);
+  }
+}
+// =========================== load marks (optional)==============================
+      async function loadMarksView() {
+  const examType = document.getElementById("viewExam").value;
+
+  if (!examType) {
+    alert("Select exam type");
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `https://sbmt-backend.onrender.com/api/marks/view/${className}/${examType}`,
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+      }
+    );
+
+    let data = await res.json();
+
+    // ✅ ALPHABETICAL SORT BY NAME
+    data.sort((a, b) =>
+      (a.studentId?.name || "").localeCompare(b.studentId?.name || "")
+    );
+
+    const table = document.getElementById("marksViewTable");
+
+    if (!Array.isArray(data) || data.length === 0) {
+      table.innerHTML = "<tr><td>No Marks Found</td></tr>";
+      return;
+    }
+
+    let html = `
+      <tr>
+        <th>Roll No.</th>
+        <th>Name</th>
+        <th>Subject</th>
+        <th>Marks</th>
+        <th>Total</th>
+        <th>Suggestion</th>
+      </tr>
+    `;
+
+    // ✅ SR NO = INDEX (REAL LOGIC)
+    data.forEach((m, index) => {
+      html += `
+        <tr>
+          <td>${index + 1}</td>   <!-- 🔥 THIS IS YOUR SR NO -->
+          <td>${m.studentId?.name || "N/A"}</td>
+          <td>${m.subject || "-"}</td>
+          <td>${m.marksObtained ?? "-"}</td>
+          <td>${m.totalMarks ?? "-"}</td>
+          <td>${m.suggestion || "-"}</td>
+        </tr>
+      `;
+    });
+
+    table.innerHTML = html;
+  } catch (err) {
+    console.log("ERROR:", err);
+    alert("Failed to load marks");
+  }
+}
+
+    // =========================================== downlaods =======================/
+    // 🔥 SECTION SWITCH SYSTEM
+function show(id) {
+  document.querySelectorAll(".section")
+    .forEach(s => s.classList.remove("active"));
+
+  const el = document.getElementById(id);
+
+  if (!el) return;
+
+  el.classList.add("active");
+
+  // 🔥 DOWNLOAD SECTION
+  if (id === "download") {
+    loadStudentsDropdown();
+  }
+
+  // 📅 ATTENDANCE MARK SECTION
+  if (id === "attMark") {
+    loadGrid(); // always reload today's attendance
+  }
+
+  // 📊 ATTENDANCE VIEW SECTION
+  if (id === "attView") {
+    document.getElementById("viewTable").innerHTML = "";
+    document.getElementById("viewDate").value = "";
+  }
+  
+}
+
+
+// 🔥 LOAD STUDENTS IN DROPDOWN
+async function loadStudentsDropdown() {
+  const res = await fetch("https://sbmt-backend.onrender.com/api/students", {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  });
+
+  const data = await res.json();
+  allStudents = data;
+
+  renderStudentList(data);
+}
+function renderStudentList(list) {
+  const tbody = document.getElementById("studentListTable");
+
+  tbody.innerHTML = list.map(s => `
+    <tr>
+      <td style="padding:6px;">${s.name}</td>
+      <td style="padding:6px;">${s.className}</td>
+      <td style="padding:6px;">
+        <button onclick="downloadStudent('${s._id}')">
+          Download
+        </button>
+      </td>
+    </tr>
+  `).join("");
+}
+function filterStudents() {
+  const value = document.getElementById("searchStudent").value.toLowerCase();
+
+  const filtered = allStudents.filter(s =>
+    s.name.toLowerCase().includes(value)
+  );
+
+  renderStudentList(filtered);
+}
+
+// 🔥 DOWNLOAD FULL CLASS PDF
+async function downloadClass() {
+  const token = localStorage.getItem("token");
+
+  const res = await fetch("https://sbmt-backend.onrender.com/api/download/class", {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  });
+
+  if (!res.ok) {
+    alert("Download failed ❌");
+    return;
+  }
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "class-report.pdf";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+}
+
+
+// 🔥 DOWNLOAD SINGLE STUDENT PDF
+function downloadStudent(id) {
+  const token = localStorage.getItem("token");
+
+  if (!id) {
+    alert("Student ID missing ❗");
+    return;
+  }
+
+  fetch(`https://sbmt-backend.onrender.com/api/download/student/${id}`, {
+    method: "GET",
+    headers: {
+      Authorization: "Bearer " + token,
+    },
+  })
+    .then(res => {
+      if (!res.ok) throw new Error("Download failed");
+      return res.blob();
+    })
+    .then(blob => {
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "student-report.pdf";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    })
+    .catch(err => {
+      console.log(err);
+      alert("Download failed ❌");
+    });
+}
+function logout() {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+
+  alert("Logged out successfully ✅");
+
+  window.location.href = "teacher-login.html"; // apna login page path
+}
+
+
+function calculateTopStudents(records) {
+  const countMap = {};
+
+  records.forEach(s => {
+    if (!countMap[s.name]) countMap[s.name] = 0;
+    if (s.status === "P") countMap[s.name]++;
+  });
+
+  const sorted = Object.entries(countMap)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 3)
+    .map(item => item[0]);
+
+  document.getElementById("topStudents").innerText =
+    sorted.join(", ") || "No data";
+}
+// ================= DASHBOARD DATA =================
+async function loadDashboard() {
+  try {
+    const token = localStorage.getItem("token");
+
+    // 📌 TODAY DATE
+    const today = getTodayDate();
+
+    // ================= STUDENTS =================
+    const studentRes = await fetch("https://sbmt-backend.onrender.com/api/students", {
+      headers: { Authorization: "Bearer " + token }
+    });
+
+    const studentData = await studentRes.json();
+    const totalStudents = Array.isArray(studentData) ? studentData.length : 0;
+
+    document.getElementById("totalStudents").innerText = totalStudents;
+
+    // ================= ATTENDANCE =================
+    const attRes = await fetch(
+  `https://sbmt-backend.onrender.com/api/attendance/view/${today}`,
+  {
+    headers: {
+      Authorization: "Bearer " + token
+    }
+  }
+);
+
+    const attData = await attRes.json();
+
+    let records = attData.records || [];
+
+    let present = records.filter(s => s.status === "P").length;
+    let absent = records.filter(s => s.status === "A").length;
+
+    document.getElementById("presentCount").innerText = present;
+    document.getElementById("absentCount").innerText = absent;
+
+    // ================= TOP STUDENTS =================
+    calculateTopStudents(records);
+
+  } catch (err) {
+    console.log("DASHBOARD ERROR:", err);
+  }
+}
+
+//-------------------------------------------------------------------------------------
+
+window.onload = async () => {
+  // ✅ default section
+  show("home");
+
+  // ✅ IST safe date fix
+  const dateInput = document.getElementById("datePicker");
+
+  if (dateInput) {
+    dateInput.value = getTodayDate();
+  }
+
+  try {
+    // ✅ LOAD STUDENTS
+    if (typeof loadStudents === "function") {
+      await loadStudents();
+    }
+
+    // 🔥 LOAD DASHBOARD (NEW)
+    if (typeof loadDashboard === "function") {
+      await loadDashboard();
+    }
+
+  } catch (err) {
+    console.log("INIT ERROR:", err);
+  }
+};
+
+setInterval(() => {
+  if (typeof loadDashboard === "function") {
+    loadDashboard();
+  }
+}, 30000);
+//===================================== create password ================================
+    async function changePassword() {
+      const oldPassword = document.getElementById("oldPassword").value;
+      const newPassword = document.getElementById("newPassword").value;
+
+      const token = localStorage.getItem("token");
+
+      const res = await fetch("https://sbmt-backend.onrender.com/api/teacher/change-password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`
+        },
+        body: JSON.stringify({ oldPassword, newPassword })
+      });
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert("Password changed successfully");
+      } else {
+        alert(data.message);
+      }
+    }
+
+    </script>
+  </body>
+</html>
