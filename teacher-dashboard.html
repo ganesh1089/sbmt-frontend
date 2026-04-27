@@ -809,8 +809,13 @@ async function searchStudentForID() {
 
   </div>
 `).join("");}
-      /* ADD STUDENT */
- async function addStudent() {
+   /* ADD STUDENT (FIXED & SAFE) */
+let isSubmitting = false;
+
+async function addStudent() {
+  if (isSubmitting) return; // 🔥 prevent double click
+  isSubmitting = true;
+
   const name = document.getElementById("name").value.trim();
   const fatherName = document.getElementById("fatherName").value.trim();
   const mobile = document.getElementById("mobile").value.trim();
@@ -819,23 +824,24 @@ async function searchStudentForID() {
   const address = document.getElementById("address").value.trim();
   const photoFile = document.getElementById("photo").files[0];
 
-  // ✅ validation
-  if (!name || !fatherName || !mobile || !gender || !dob) {
-    alert("All required fields fill karo ❌");
-    return;
-  }
-
-  if (!/^[A-Za-z ]+$/.test(name)) {
-    alert("Name only letters ❌");
-    return;
-  }
-
-  if (!/^[0-9]{10}$/.test(mobile)) {
-    alert("Mobile must be 10 digits ❌");
-    return;
-  }
-
   try {
+    // ================= VALIDATION =================
+    if (!name || !fatherName || !mobile || !gender || !dob) {
+      alert("All required fields fill karo ❌");
+      return;
+    }
+
+    if (!/^[A-Za-z ]+$/.test(name)) {
+      alert("Name only letters ❌");
+      return;
+    }
+
+    if (!/^[0-9]{10}$/.test(mobile)) {
+      alert("Mobile must be 10 digits ❌");
+      return;
+    }
+
+    // ================= FORM DATA =================
     const formData = new FormData();
 
     formData.append("name", name);
@@ -849,40 +855,57 @@ async function searchStudentForID() {
       formData.append("photo", photoFile);
     }
 
-    const res = await fetch("https://sbmt-backend.onrender.com/api/students/add", {
-      method: "POST",
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-      body: formData
-    });
+    // ================= API CALL =================
+    const res = await fetch(
+      "https://sbmt-backend.onrender.com/api/students/add",
+      {
+        method: "POST",
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("token"),
+        },
+        body: formData,
+      }
+    );
 
-    const data = await res.json();
+    // ================= SAFE RESPONSE =================
+    const text = await res.text();
 
-    if (res.ok) {
-      alert("Student Saved ✅");
-
-      // 🔥 clear form
-      document.getElementById("name").value = "";
-      document.getElementById("fatherName").value = "";
-      document.getElementById("mobile").value = "";
-      document.getElementById("gender").value = "";
-      document.getElementById("dob").value = "";
-      document.getElementById("address").value = "";
-      document.getElementById("photo").value = "";
-
-      loadStudents();
-
-    } else {
-      alert(data.message || "Error ❌");
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      console.log("❌ Non-JSON Response:", text);
+      alert("Server error (check backend logs)");
+      return;
     }
 
+    if (!res.ok) {
+      alert(data.msg || data.message || "Error ❌");
+      return;
+    }
+
+    // ================= SUCCESS =================
+    alert(data.message || "Student Saved ✅");
+
+    // reset form
+    document.getElementById("name").value = "";
+    document.getElementById("fatherName").value = "";
+    document.getElementById("mobile").value = "";
+    document.getElementById("gender").value = "";
+    document.getElementById("dob").value = "";
+    document.getElementById("address").value = "";
+    document.getElementById("photo").value = "";
+
+    // reload list
+    loadStudents();
+
   } catch (err) {
-    console.log(err);
+    console.log("ADD STUDENT ERROR:", err);
     alert("Server error ❌");
+  } finally {
+    isSubmitting = false; // 🔥 unlock button
   }
 }
-
       //================================= LOAD STUDENTS ========================================
      async function loadStudents() {
   try {
