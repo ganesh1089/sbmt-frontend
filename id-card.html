@@ -25,7 +25,6 @@ body {
   overflow: hidden;
   box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 
-  /* 🔥 PRINT FIX */
   -webkit-print-color-adjust: exact;
   print-color-adjust: exact;
 }
@@ -41,11 +40,10 @@ body {
   print-color-adjust: exact;
 }
 
-/* LOGO */
 .header img {
   width: 70px;
   height: 70px;
-  border-radius: 10px; /* ✔ as you wanted */
+  border-radius: 10px;
   object-fit: cover;
   border: 2px solid white;
   margin-bottom: 5px;
@@ -58,7 +56,6 @@ body {
   gap: 10px;
 }
 
-/* PHOTO */
 .photo {
   width: 110px;
   height: 130px;
@@ -66,7 +63,6 @@ body {
   border-radius: 10px;
 }
 
-/* INFO */
 .info {
   font-size: 13px;
 }
@@ -75,7 +71,7 @@ body {
   margin: 4px 0;
 }
 
-/* QR RIGHT SIDE FIX */
+/* QR */
 #qrcode {
   display: flex;
   justify-content: center;
@@ -111,19 +107,10 @@ button {
   font-weight: bold;
 }
 
-/* 🔥 PRINT FIX IMPORTANT */
 @media print {
-  body {
-    background: white !important;
-  }
-
-  button {
-    display: none;
-  }
-
-  .card {
-    box-shadow: none;
-  }
+  body { background: white !important; }
+  button { display: none; }
+  .card { box-shadow: none; }
 }
 </style>
 </head>
@@ -178,41 +165,50 @@ button {
 <script>
 
 const params = new URLSearchParams(window.location.search);
-const studentId = params.get("studentId");
+
+// 🔥 UPDATED: token based system
+const token = params.get("token");
 
 const API = "https://sbmt-backend.onrender.com";
 
 async function loadStudent() {
-  const res = await fetch(`${API}/api/students/${studentId}`, {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("token")
+  try {
+    const res = await fetch(`${API}/api/qr/student/${token}`);
+
+    const student = await res.json();
+
+    if (!res.ok) {
+      alert("Student not found ❌");
+      return;
     }
-  });
 
-  const student = await res.json();
+    // ================= DATA =================
+    document.getElementById("name").innerText = student.name;
+    document.getElementById("father").innerText = "Father: " + student.fatherName;
+    document.getElementById("class").innerText = "Class: " + student.className;
+    document.getElementById("mobile").innerText = "Mobile: " + student.mobile;
+    document.getElementById("dob").innerText = "DOB: " + student.dob;
+    document.getElementById("admission").innerText =
+      "Admission: " + (student.admissionNo || "-");
 
-  if (!res.ok) {
-    alert("Student not found ❌");
-    return;
+    document.getElementById("photo").src =
+      student.photo
+        ? `${API}/uploads/${student.photo}`
+        : "https://via.placeholder.com/110x130";
+
+    // ================= QR FIX =================
+    const qrUrl = `${window.location.origin}/student-report.html?token=${student.qrToken}`;
+
+    new QRCode(document.getElementById("qrcode"), {
+      text: qrUrl,
+      width: 100,
+      height: 100,
+    });
+
+  } catch (err) {
+    console.log(err);
+    alert("Server error ❌");
   }
-
-  document.getElementById("name").innerText = student.name;
-  document.getElementById("father").innerText = "Father: " + student.fatherName;
-  document.getElementById("class").innerText = "Class: " + student.className;
-  document.getElementById("mobile").innerText = "Mobile: " + student.mobile;
-  document.getElementById("dob").innerText = "DOB: " + student.dob;
-  document.getElementById("admission").innerText = "Admission: " + (student.admissionNo || "-");
-
-  document.getElementById("photo").src =
-    student.photo
-      ? `${API}/uploads/${student.photo}`
-      : "https://via.placeholder.com/110x130";
-
-  new QRCode(document.getElementById("qrcode"), {
-    text: student._id,
-    width: 100,
-    height: 100
-  });
 }
 
 loadStudent();
