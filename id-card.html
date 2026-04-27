@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student ID Card</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body {
+  font-family: Arial;
+  background: #e5e7eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* CARD */
+.card {
+  width: 380px;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+
+  /* 🔥 PRINT FIX */
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* HEADER */
+.header {
+  background: linear-gradient(135deg, #3b82f6, #6366f1);
+  color: white;
+  text-align: center;
+  padding: 12px;
+
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+/* LOGO */
+.header img {
+  width: 70px;
+  height: 70px;
+  border-radius: 10px; /* ✔ as you wanted */
+  object-fit: cover;
+  border: 2px solid white;
+  margin-bottom: 5px;
+}
+
+/* BODY */
+.body {
+  display: flex;
+  padding: 15px;
+  gap: 10px;
+}
+
+/* PHOTO */
+.photo {
+  width: 110px;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+
+/* INFO */
+.info {
+  font-size: 13px;
+}
+
+.info p {
+  margin: 4px 0;
+}
+
+/* QR RIGHT SIDE FIX */
+#qrcode {
+  display: flex;
+  justify-content: center;
+  padding: 10px 20px;
+}
+
+/* FOOTER */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px;
+  font-size: 11px;
+}
+
+.sign {
+  text-align: center;
+}
+
+.sign div {
+  border-top: 1px solid black;
+  width: 90px;
+  margin-top: 25px;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  background: #10b981;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+/* 🔥 PRINT FIX IMPORTANT */
+@media print {
+  body {
+    background: white !important;
+  }
+
+  button {
+    display: none;
+  }
+
+  .card {
+    box-shadow: none;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+  <!-- HEADER -->
+  <div class="header">
+    <img src="./assets/logo.png" alt="logo">
+    <h3>SBMT COLLEGE</h3>
+    <small>Student Identity Card</small>
+  </div>
+
+  <!-- BODY -->
+  <div class="body">
+
+    <img id="photo" class="photo">
+
+    <div class="info">
+      <p><b id="name"></b></p>
+      <p id="father"></p>
+      <p id="class"></p>
+      <p id="mobile"></p>
+      <p id="dob"></p>
+      <p id="admission"></p>
+    </div>
+
+  </div>
+
+  <!-- QR -->
+  <div id="qrcode"></div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <div class="sign">
+      <div></div>
+      Principal
+    </div>
+
+    <div class="sign">
+      <div></div>
+      HOD
+    </div>
+  </div>
+
+  <button onclick="window.print()">Print / Download</button>
+
+</div>
+
+<script>
+
+const params = new URLSearchParams(window.location.search);
+const studentId = params.get("studentId");
+
+const API = "https://sbmt-backend.onrender.com";
+
+async function loadStudent() {
+  const res = await fetch(`${API}/api/students/${studentId}`, {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token")
+    }
+  });
+
+  const student = await res.json();
+
+  if (!res.ok) {
+    alert("Student not found ❌");
+    return;
+  }
+
+  document.getElementById("name").innerText = student.name;
+  document.getElementById("father").innerText = "Father: " + student.fatherName;
+  document.getElementById("class").innerText = "Class: " + student.className;
+  document.getElementById("mobile").innerText = "Mobile: " + student.mobile;
+  document.getElementById("dob").innerText = "DOB: " + student.dob;
+  document.getElementById("admission").innerText = "Admission: " + (student.admissionNo || "-");
+
+  document.getElementById("photo").src =
+    student.photo
+      ? `${API}/uploads/${student.photo}`
+      : "https://via.placeholder.com/110x130";
+
+  new QRCode(document.getElementById("qrcode"), {
+    text: student._id,
+    width: 100,
+    height: 100
+  });
+}
+
+loadStudent();
+
+</script>
+
+</body>
+</html>

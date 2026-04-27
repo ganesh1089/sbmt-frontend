@@ -4,6 +4,7 @@
     <meta charset="UTF-8" />
     <title>SBMT ERP Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<img src="https://sbmt-backend.onrender.com/uploads/${s.photo}" width="40">
     <style>
 /* ===== BODY ===== */
 body {
@@ -514,48 +515,66 @@ td, th {
 
       <!-- ADD STUDENT -->
       <div id="add" class="section card">
-        <h3>Add Student</h3>
+  <h3>Add Student</h3>
 
-        <input id="name" placeholder="Name" />
-        <input id="fatherName" placeholder="Father Name" />
-        <input id="mobile" placeholder="Mobile" />
+  <input id="name" placeholder="Name" />
+  <input id="fatherName" placeholder="Father Name" />
+  <input id="mobile" placeholder="Mobile" />
 
-        <!-- ✅ NEW FIELDS -->
-        <select id="gender">
-          <option value="">Gender</option>
-          <option>Male</option>
-          <option>Female</option>
-        </select>
+  <select id="gender">
+  <option value="">Select Gender</option>
+  <option value="Male">Male</option>
+  <option value="Female">Female</option>
+</select>
+  <input type="date" id="dob" />
 
-        <input type="date" id="dob" />
+  <!-- 🔥 NEW FIELDS -->
+  <input id="address" placeholder="Address" />
 
-        <h4 id="classTitle"></h4>
+  <label style="margin-top:8px; display:block;">Upload Photo</label>
+  <input id="photo" type="file" accept="image/*" />
 
-        <button onclick="addStudent()">Add Student</button>
-      </div>
+  <small style="color:gray;">
+    * Details will be used for ID Card & QR system
+  </small>
+
+  <h4 id="classTitle"></h4>
+
+  <button onclick="addStudent()">Add Student</button>
+</div>
 
       <!-- STUDENT LIST -->
       <div id="list" class="section card">
-        <h3>Student List</h3>
-        <table>
-          <thead>
-            <tr>
-  <th>SR No</th>
-  <th>Name</th>
-  <th>Father Name</th>
-  <th>Date of Birth</th>
-  <th>Class</th>
-</tr>
-          </thead>
-          <tbody id="studentTableBody"></tbody>
-        </table>
-      </div>
+  <h3>Student List</h3>
 
+  <!-- 🔍 SEARCH BOX -->
+  <input 
+    type="text" 
+    id="searchStudentId" 
+    placeholder="Search student by name..."
+    oninput="searchStudentForID()"
+  />
 
+  <!-- SEARCH RESULTS -->
+  <div id="searchResults" style="margin-top:10px;"></div>
 
+  <hr>
 
-
-
+  <!-- FULL LIST -->
+  <table>
+    <thead>
+      <tr>
+        <th>SR No</th>
+        <th>Name</th>
+        <th>Father Name</th>
+        <th>DOB</th>
+        <th>Class</th>
+        <th>Action</th> <!-- 🔥 NEW -->
+      </tr>
+    </thead>
+    <tbody id="studentTableBody"></tbody>
+  </table>
+</div>
 <div id="attendance" class="section card">
   <h2>📅 Attendance System</h2>
 
@@ -743,56 +762,123 @@ if (!className) {
   throw new Error("Class not assigned");
 }
 
+function openIDCard(studentId) {
+  if (!studentId) {
+    alert("Student not found ❌");
+    return;
+  }
+
+  window.open(`id-card.html?studentId=${studentId}`, "_blank");
+}
+async function searchStudentForID() {
+  const value = document.getElementById("searchStudentId").value.toLowerCase();
+
+  const res = await fetch("https://sbmt-backend.onrender.com/api/students", {
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("token"),
+    },
+  });
+
+  const students = await res.json();
+
+  const filtered = students.filter(s =>
+    s.name.toLowerCase().includes(value)
+  );
+
+  const box = document.getElementById("searchResults");
+
+  box.innerHTML = filtered.map(s => `
+  <div style="
+    background:white;
+    padding:10px;
+    margin:5px 0;
+    border-radius:8px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+  ">
+
+    <div>
+      <b>${s.name}</b><br>
+      <small>${s.className}</small>
+    </div>
+
+    <button onclick="openIDCard('${s._id}')">
+      🎫 Generate ID Card
+    </button>
+
+  </div>
+`).join("");}
       /* ADD STUDENT */
-     async function addStudent() {
-  const name = document.getElementById("name").value;
-  const fatherName = document.getElementById("fatherName").value;
-  const mobile = document.getElementById("mobile").value;
+ async function addStudent() {
+  const name = document.getElementById("name").value.trim();
+  const fatherName = document.getElementById("fatherName").value.trim();
+  const mobile = document.getElementById("mobile").value.trim();
   const gender = document.getElementById("gender").value;
   const dob = document.getElementById("dob").value;
+  const address = document.getElementById("address").value.trim();
+  const photoFile = document.getElementById("photo").files[0];
 
-  // validation
-  if (!name || !fatherName) {
-    alert("Name and Father Name required ❌");
+  // ✅ validation
+  if (!name || !fatherName || !mobile || !gender || !dob) {
+    alert("All required fields fill karo ❌");
+    return;
+  }
+
+  if (!/^[A-Za-z ]+$/.test(name)) {
+    alert("Name only letters ❌");
+    return;
+  }
+
+  if (!/^[0-9]{10}$/.test(mobile)) {
+    alert("Mobile must be 10 digits ❌");
     return;
   }
 
   try {
+    const formData = new FormData();
+
+    formData.append("name", name);
+    formData.append("fatherName", fatherName);
+    formData.append("mobile", mobile);
+    formData.append("gender", gender);
+    formData.append("dob", dob);
+    formData.append("address", address);
+
+    if (photoFile) {
+      formData.append("photo", photoFile);
+    }
+
     const res = await fetch("https://sbmt-backend.onrender.com/api/students/add", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json",
         Authorization: "Bearer " + localStorage.getItem("token"),
       },
-      body: JSON.stringify({
-  name,
-  fatherName,
-  mobile,
-  gender,
-  dob
-})
+      body: formData
     });
 
     const data = await res.json();
 
     if (res.ok) {
-      alert(data.message || "Student Saved ✅");
+      alert("Student Saved ✅");
 
-      // 🔥 CLEAR FORM
+      // 🔥 clear form
       document.getElementById("name").value = "";
       document.getElementById("fatherName").value = "";
       document.getElementById("mobile").value = "";
       document.getElementById("gender").value = "";
       document.getElementById("dob").value = "";
+      document.getElementById("address").value = "";
+      document.getElementById("photo").value = "";
 
-      // 🔥 REFRESH LIST
       loadStudents();
+
     } else {
-      alert(data.msg || data.message || "Error ❌");
+      alert(data.message || "Error ❌");
     }
 
   } catch (err) {
-    console.log("ADD STUDENT ERROR:", err);
+    console.log(err);
     alert("Server error ❌");
   }
 }
@@ -820,14 +906,20 @@ if (!className) {
 
     students.forEach((s, index) => {
       tableBody.innerHTML += `
-        <tr>
-          <td>${index + 1}</td>
-          <td>${s.name}</td>
-          <td>${s.fatherName}</td>
-          <td>${s.dob ? new Date(s.dob).toLocaleDateString("en-GB") : "-"}</td>
-          <td>${s.className}</td>
-        </tr>
-      `;
+<tr>
+  <td>${index + 1}</td>
+  <td>${s.name}</td>
+  <td>${s.fatherName}</td>
+  <td>${s.dob ? new Date(s.dob).toLocaleDateString("en-GB") : "-"}</td>
+  <td>${s.className}</td>
+
+  <td>
+    <button onclick="openIDCard('${s._id}')">
+      🎫 Generate
+    </button>
+  </td>
+</tr>
+`;
     });
 
   } catch (err) {

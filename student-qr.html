@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Student Profile</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: Arial;
+  background: linear-gradient(to right, #83a4d4, #b6fbff);
+}
+
+.container {
+  max-width: 400px;
+  margin: auto;
+  padding: 15px;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  border-radius: 15px;
+  margin-bottom: 15px;
+  text-align: center;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+}
+
+img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+h2 {
+  margin: 5px 0;
+}
+
+.badge {
+  padding: 5px 10px;
+  border-radius: 10px;
+  color: white;
+  display: inline-block;
+}
+
+.present { background: green; }
+.absent { background: red; }
+
+.table {
+  width: 100%;
+  font-size: 13px;
+  border-collapse: collapse;
+}
+
+.table th, .table td {
+  border: 1px solid #ddd;
+  padding: 6px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <!-- PROFILE -->
+  <div class="card">
+    <img id="photo" src="">
+    <h2 id="name">Loading...</h2>
+    <p id="class"></p>
+    <p id="admission"></p>
+  </div>
+
+  <!-- ATTENDANCE -->
+  <div class="card">
+    <h3>📅 Attendance</h3>
+    <p>Today: <span id="today"></span></p>
+    <p>Monthly: <b id="monthly"></b>%</p>
+  </div>
+
+  <!-- MARKS -->
+  <div class="card">
+    <h3>📊 Marks</h3>
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Subject</th>
+          <th>Marks</th>
+        </tr>
+      </thead>
+      <tbody id="marksTable"></tbody>
+    </table>
+  </div>
+
+</div>
+
+<script>
+
+// 🔥 GET TOKEN FROM URL
+const params = new URLSearchParams(window.location.search);
+const token = params.get("token");
+
+// 🔥 API CALL
+async function loadData() {
+  const res = await fetch(`https://sbmt-backend.onrender.com/api/student/qr/${token}`);
+  const data = await res.json();
+
+  // PROFILE
+  document.getElementById("name").innerText = data.name;
+  document.getElementById("class").innerText = "Class: " + data.className;
+  document.getElementById("admission").innerText = data.admissionNo;
+
+  document.getElementById("photo").src =
+    `https://sbmt-backend.onrender.com/uploads/${data.photo}`;
+
+  // ATTENDANCE
+  const todayEl = document.getElementById("today");
+
+  if (data.todayAttendance === "P") {
+    todayEl.innerHTML = '<span class="badge present">Present</span>';
+  } else if (data.todayAttendance === "A") {
+    todayEl.innerHTML = '<span class="badge absent">Absent</span>';
+  } else {
+    todayEl.innerText = "N/A";
+  }
+
+  document.getElementById("monthly").innerText =
+    data.monthlyAttendance;
+
+  // MARKS
+  const table = document.getElementById("marksTable");
+  table.innerHTML = "";
+
+  data.marks.forEach(m => {
+    table.innerHTML += `
+      <tr>
+        <td>${m.subject}</td>
+        <td>${m.marksObtained}/${m.totalMarks}</td>
+      </tr>
+    `;
+  });
+}
+
+loadData();
+
+</script>
+
+</body>
+</html>
