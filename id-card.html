@@ -17,6 +17,7 @@ body {
   height: 100vh;
 }
 
+/* ================= CARD ================= */
 .card {
   width: 380px;
   background: white;
@@ -25,6 +26,7 @@ body {
   box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 }
 
+/* ================= HEADER ================= */
 .header {
   background: linear-gradient(135deg, #3b82f6, #6366f1);
   color: white;
@@ -40,6 +42,7 @@ body {
   border: 2px solid white;
 }
 
+/* ================= BODY ================= */
 .body {
   display: flex;
   padding: 15px;
@@ -61,12 +64,33 @@ body {
   margin: 4px 0;
 }
 
+/* ================= QR ================= */
 #qrcode {
   display: flex;
   justify-content: center;
   padding: 10px;
 }
 
+/* ================= SIGNATURE SECTION ================= */
+.sign-section {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 15px;
+  font-size: 12px;
+  margin-top: 5px;
+}
+
+.sign-box {
+  text-align: center;
+}
+
+.sign-line {
+  width: 120px;
+  border-top: 1px solid #000;
+  margin-top: 25px;
+}
+
+/* ================= BUTTON ================= */
 button {
   width: 100%;
   padding: 10px;
@@ -77,8 +101,22 @@ button {
   cursor: pointer;
 }
 
+/* ================= PRINT FIX ================= */
 @media print {
-  button { display: none; }
+
+  body {
+    background: white !important;
+  }
+
+  .card {
+    box-shadow: none !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  button {
+    display: none;
+  }
 }
 </style>
 </head>
@@ -107,6 +145,21 @@ button {
 
   <div id="qrcode"></div>
 
+  <!-- ================= SIGNATURES ================= -->
+  <div class="sign-section">
+    
+    <div class="sign-box">
+      <div class="sign-line"></div>
+      <p>HOD Signature</p>
+    </div>
+
+    <div class="sign-box">
+      <div class="sign-line"></div>
+      <p>Principal Signature</p>
+    </div>
+
+  </div>
+
   <button onclick="window.print()">Print / Download</button>
 
 </div>
@@ -114,54 +167,51 @@ button {
 <script>
 
 const params = new URLSearchParams(window.location.search);
+const id = params.get("id");
 
-// 🔥 FIXED: NOW USING TOKEN (NOT studentId)
-const token = params.get("token");
-
-const API = window.location.origin;
+const API = "https://sbmt-backend.onrender.com";
 
 async function loadStudent() {
   try {
-
-    if (!token) {
-      alert("Invalid QR Token");
+    if (!id) {
+      alert("Invalid Student ID ❌");
       return;
     }
 
-    const res = await fetch(`${API}/api/qr/student/${token}`);
+    const res = await fetch(`${API}/api/students/id-card/${id}`, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token")
+      }
+    });
+
     const data = await res.json();
 
     if (!res.ok) {
-      alert(data.message || "Student not found ❌");
+      alert(data.msg || "Student not found ❌");
       return;
     }
 
-    // ================= STUDENT DATA =================
-    const s = data.student;
+    const s = data;
 
-    document.getElementById("name").innerText = s?.name || "-";
-    document.getElementById("father").innerText = "Father: " + (s?.fatherName || "-");
-    document.getElementById("class").innerText = "Class: " + (s?.className || "-");
-    document.getElementById("mobile").innerText = "Mobile: " + (s?.mobile || "-");
-    document.getElementById("admission").innerText = "Admission: " + (s?.admissionNo || "-");
+    document.getElementById("name").innerText = s.name;
+    document.getElementById("father").innerText = "Father: " + s.fatherName;
+    document.getElementById("class").innerText = "Class: " + s.className;
+    document.getElementById("mobile").innerText = "Mobile: " + s.mobile;
+    document.getElementById("admission").innerText = "Admission: " + s.admissionNo;
 
-    // ================= PHOTO =================
     document.getElementById("photo").src =
-      s?.photo
-        ? `${API}/uploads/${s.photo}`
-        : "https://via.placeholder.com/110x130";
+      s.photo ? `${API}/uploads/${s.photo}` : "https://via.placeholder.com/110x130";
 
-    // ================= QR ================
+    // ================= QR =================
+    document.getElementById("qrcode").innerHTML = "";
 
-document.getElementById("qrcode").innerHTML = "";
+    const qrValue = `${window.location.origin}/student-profile.html?token=${s.qrToken}`;
 
-const qrValue = `${window.location.origin}/student-profile.html?token=${s?.qrToken}`;
-
-new QRCode(document.getElementById("qrcode"), {
-  text: qrValue,
-  width: 100,
-  height: 100
-});
+    new QRCode(document.getElementById("qrcode"), {
+      text: qrValue,
+      width: 120,
+      height: 120
+    });
 
   } catch (err) {
     console.log(err);
@@ -172,6 +222,5 @@ new QRCode(document.getElementById("qrcode"), {
 loadStudent();
 
 </script>
-
 </body>
 </html>

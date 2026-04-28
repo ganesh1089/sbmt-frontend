@@ -768,7 +768,8 @@ function openIDCard(studentId) {
     return;
   }
 
-  window.open(`id-card.html?studentId=${studentId}`, "_blank");
+  const url = `id-card.html?id=${studentId}`;
+  window.open(url, "_blank");
 }
 async function searchStudentForID() {
   const value = document.getElementById("searchStudentId").value.toLowerCase();
