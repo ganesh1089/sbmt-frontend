@@ -817,15 +817,15 @@ async function addStudent() {
   if (isSubmitting) return;
   isSubmitting = true;
 
-  const name = document.getElementById("name").value.trim();
-  const fatherName = document.getElementById("fatherName").value.trim();
-  const mobile = document.getElementById("mobile").value.trim();
-  const gender = document.getElementById("gender").value;
-  const dob = document.getElementById("dob").value;
-  const address = document.getElementById("address").value.trim();
-  const photoFile = document.getElementById("photo").files[0];
-
   try {
+    const name = document.getElementById("name").value.trim();
+    const fatherName = document.getElementById("fatherName").value.trim();
+    const mobile = document.getElementById("mobile").value.trim();
+    const gender = document.getElementById("gender").value;
+    const dob = document.getElementById("dob").value;
+    const address = document.getElementById("address").value.trim();
+    const photoFile = document.getElementById("photo").files[0];
+
     // ================= VALIDATION =================
     if (!name || !fatherName || !mobile || !gender || !dob) {
       alert("All required fields fill karo ❌");
@@ -843,7 +843,6 @@ async function addStudent() {
     }
 
     const token = localStorage.getItem("token");
-
     if (!token) {
       alert("Login required ❌");
       return;
@@ -874,18 +873,10 @@ async function addStudent() {
       }
     );
 
-    const text = await res.text();
-
-    let data;
-    try {
-      data = text ? JSON.parse(text) : {};
-    } catch (err) {
-      console.log("RAW RESPONSE:", text);
-      alert("Server error ❌ check backend");
-      return;
-    }
+    const data = await res.json().catch(() => ({}));
 
     if (!res.ok) {
+      console.log("ERROR RESPONSE:", data);
       alert(data.msg || data.message || "Error ❌");
       return;
     }
@@ -901,7 +892,9 @@ async function addStudent() {
     document.getElementById("address").value = "";
     document.getElementById("photo").value = "";
 
-    loadStudents();
+    if (typeof loadStudents === "function") {
+      loadStudents();
+    }
 
   } catch (err) {
     console.log("ADD STUDENT ERROR:", err);

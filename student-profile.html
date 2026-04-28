@@ -73,7 +73,7 @@ h2 { margin: 5px 0; }
 
   <!-- PROFILE -->
   <div class="card">
-    <img class="logo" src="https://sbmt-backend.onrender.com/uploads/logo.png" alt="logo">
+    <img class="logo" src="https://sbmt-backend.onrender.com/uploads/logo.png">
 
     <img id="photo" class="profile">
     <h2 id="name">Loading...</h2>
@@ -106,31 +106,34 @@ h2 { margin: 5px 0; }
 
 <script>
 
-const params = new URLSearchParams(window.location.search);
-const token = params.get("token");
-
 const API = "https://sbmt-backend.onrender.com";
+const params = new URLSearchParams(window.location.search);
+
+// 🔥 support both token / id safety
+const token = params.get("token") || params.get("id");
 
 async function loadData() {
   try {
 
     if (!token) {
-      alert("Invalid QR Token ❌");
+      alert("QR Token missing ❌");
       return;
     }
 
     const res = await fetch(`${API}/api/qr/student/${token}`);
-    const data = await res.json();
 
-    if (!res.ok || !data || !data.student) {
-      console.log("API ERROR:", data);
+    const data = await res.json().catch(() => ({}));
+
+    console.log("QR DATA:", data);
+
+    if (!res.ok) {
       alert(data.message || "Student not found ❌");
       return;
     }
 
-    // ================= PROFILE =================
-    const s = data.student;
+    const s = data.student || data;
 
+    // ================= PROFILE =================
     document.getElementById("name").innerText = s?.name || "-";
     document.getElementById("class").innerText = "Class: " + (s?.className || "-");
     document.getElementById("admission").innerText = s?.admissionNo || "-";
@@ -141,14 +144,15 @@ async function loadData() {
         : "https://via.placeholder.com/120";
 
     // ================= ATTENDANCE =================
-    const todayEl = document.getElementById("today");
-    const status = data?.todayAttendance || "N/A";
+    const status = data.todayAttendance;
 
-    if (status === "P" || status === "Present") {
-      todayEl.innerHTML = '<span class="badge present">Present</span>';
+    const todayEl = document.getElementById("today");
+
+    if (status === "P") {
+      todayEl.innerHTML = `<span class="badge present">Present</span>`;
     } 
-    else if (status === "A" || status === "Absent") {
-      todayEl.innerHTML = '<span class="badge absent">Absent</span>';
+    else if (status === "A") {
+      todayEl.innerHTML = `<span class="badge absent">Absent</span>`;
     } 
     else {
       todayEl.innerText = "N/A";
@@ -156,35 +160,35 @@ async function loadData() {
 
     // ================= MONTHLY =================
     document.getElementById("monthly").innerText =
-      data?.attendancePercentage || 0;
+      data.attendancePercentage ?? 0;
 
     // ================= MARKS =================
     const table = document.getElementById("marksTable");
     table.innerHTML = "";
 
-    const marks = data?.marks || [];
+    const marks = data.marks || [];
 
-    if (marks.length > 0) {
-      marks.forEach(m => {
-        table.innerHTML += `
-          <tr>
-            <td>${m?.subject || "-"}</td>
-            <td>${m?.marksObtained ?? 0}/${m?.totalMarks ?? 0}</td>
-          </tr>
-        `;
-      });
-    } else {
+    if (!marks.length) {
       table.innerHTML = `<tr><td colspan="2">No marks available</td></tr>`;
+      return;
     }
 
+    marks.forEach(m => {
+      table.innerHTML += `
+        <tr>
+          <td>${m.subject || "-"}</td>
+          <td>${m.marksObtained ?? 0}/${m.totalMarks ?? 0}</td>
+        </tr>
+      `;
+    });
+
   } catch (err) {
-    console.log("ERROR:", err);
+    console.log("QR ERROR:", err);
     alert("Server error ❌");
   }
 }
 
 loadData();
-setInterval(loadData, 10000);
 
 </script>
 
