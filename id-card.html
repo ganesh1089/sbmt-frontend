@@ -217,7 +217,7 @@ async function loadStudent() {
 
     // ================= QR =================
     new QRCode(document.getElementById("qrcode"), {
-      text: `${window.location.origin}/id-card.html?studentId=${data._id}`,
+      text: `${window.location.origin}/student-qr.html?token=${student.qrToken}`,
       width: 100,
       height: 100
     });
