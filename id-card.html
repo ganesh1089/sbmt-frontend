@@ -24,9 +24,6 @@ body {
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
 }
 
 /* HEADER */
@@ -35,9 +32,6 @@ body {
   color: white;
   text-align: center;
   padding: 12px;
-
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
 }
 
 .header img {
@@ -46,7 +40,6 @@ body {
   border-radius: 10px;
   object-fit: cover;
   border: 2px solid white;
-  margin-bottom: 5px;
 }
 
 /* BODY */
@@ -75,7 +68,7 @@ body {
 #qrcode {
   display: flex;
   justify-content: center;
-  padding: 10px 20px;
+  padding: 10px;
 }
 
 /* FOOTER */
@@ -103,13 +96,13 @@ button {
   border: none;
   background: #10b981;
   color: white;
-  cursor: pointer;
   font-weight: bold;
+  cursor: pointer;
 }
 
 @media print {
-  body { background: white !important; }
   button { display: none; }
+  body { background: white; }
   .card { box-shadow: none; }
 }
 </style>
@@ -121,14 +114,13 @@ button {
 
   <!-- HEADER -->
   <div class="header">
-    <img src="./assets/logo.png" alt="logo">
+    <img src="./assets/logo.png">
     <h3>SBMT COLLEGE</h3>
-    <small>Student Identity Card</small>
+    <small>Student ID Card</small>
   </div>
 
   <!-- BODY -->
   <div class="body">
-
     <img id="photo" class="photo">
 
     <div class="info">
@@ -139,7 +131,6 @@ button {
       <p id="dob"></p>
       <p id="admission"></p>
     </div>
-
   </div>
 
   <!-- QR -->
@@ -165,17 +156,30 @@ button {
 <script>
 
 const params = new URLSearchParams(window.location.search);
-
-// 🔥 UPDATED: token based system
-const token = params.get("token");
+const studentId = params.get("studentId"); // ✅ FIXED
 
 const API = "https://sbmt-backend.onrender.com";
 
 async function loadStudent() {
   try {
-    const res = await fetch(`${API}/api/qr/student/${token}`);
 
-    const student = await res.json();
+    if (!studentId) {
+      alert("Invalid Student ID ❌");
+      return;
+    }
+
+    const res = await fetch(`${API}/api/qr/student/${studentId}`);
+
+    const text = await res.text();
+
+    let student;
+    try {
+      student = JSON.parse(text);
+    } catch (e) {
+      console.log("NOT JSON RESPONSE:", text);
+      alert("Server error ❌");
+      return;
+    }
 
     if (!res.ok) {
       alert("Student not found ❌");
@@ -183,13 +187,12 @@ async function loadStudent() {
     }
 
     // ================= DATA =================
-    document.getElementById("name").innerText = student.name;
-    document.getElementById("father").innerText = "Father: " + student.fatherName;
-    document.getElementById("class").innerText = "Class: " + student.className;
-    document.getElementById("mobile").innerText = "Mobile: " + student.mobile;
-    document.getElementById("dob").innerText = "DOB: " + student.dob;
-    document.getElementById("admission").innerText =
-      "Admission: " + (student.admissionNo || "-");
+    document.getElementById("name").innerText = student.name || "-";
+    document.getElementById("father").innerText = "Father: " + (student.fatherName || "-");
+    document.getElementById("class").innerText = "Class: " + (student.className || "-");
+    document.getElementById("mobile").innerText = "Mobile: " + (student.mobile || "-");
+    document.getElementById("dob").innerText = "DOB: " + (student.dob || "-");
+    document.getElementById("admission").innerText = "Admission: " + (student.admissionNo || "-");
 
     document.getElementById("photo").src =
       student.photo
@@ -197,12 +200,12 @@ async function loadStudent() {
         : "https://via.placeholder.com/110x130";
 
     // ================= QR FIX =================
-    const qrUrl = `${window.location.origin}/student-report.html?token=${student.qrToken}`;
+    const qrUrl = `${window.location.origin}/student-report.html?studentId=${student._id}`;
 
     new QRCode(document.getElementById("qrcode"), {
       text: qrUrl,
       width: 100,
-      height: 100,
+      height: 100
     });
 
   } catch (err) {
