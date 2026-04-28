@@ -107,14 +107,17 @@ h2 { margin: 5px 0; }
 <script>
 
 const params = new URLSearchParams(window.location.search);
+
+// 🔥 FIXED: only token supported
 const token = params.get("token");
+
 const API = "https://sbmt-backend.onrender.com";
 
 async function loadData() {
   try {
 
     if (!token) {
-      alert("Invalid token");
+      alert("Invalid QR Token ❌");
       return;
     }
 
@@ -123,17 +126,20 @@ async function loadData() {
 
     if (!res.ok || !data) {
       console.log("API ERROR:", data);
+      alert(data.message || "Student not found ❌");
       return;
     }
 
-    // ================= PROFILE FIX =================
-    document.getElementById("name").innerText = data.student?.name || "-";
-    document.getElementById("class").innerText = "Class: " + (data.student?.className || "-");
-    document.getElementById("admission").innerText = data.student?.admissionNo || "-";
+    // ================= PROFILE =================
+    const s = data.student;
+
+    document.getElementById("name").innerText = s?.name || "-";
+    document.getElementById("class").innerText = "Class: " + (s?.className || "-");
+    document.getElementById("admission").innerText = s?.admissionNo || "-";
 
     document.getElementById("photo").src =
-      data.student?.photo
-        ? `${API}/uploads/${data.student.photo}`
+      s?.photo
+        ? `${API}/uploads/${s.photo}`
         : "https://via.placeholder.com/120";
 
     // ================= ATTENDANCE =================
@@ -150,7 +156,7 @@ async function loadData() {
       todayEl.innerText = "N/A";
     }
 
-    // ================= MONTHLY FIX =================
+    // ================= MONTHLY =================
     document.getElementById("monthly").innerText =
       data.attendancePercentage || 0;
 
@@ -176,10 +182,7 @@ async function loadData() {
   }
 }
 
-// initial load
 loadData();
-
-// realtime update
 setInterval(loadData, 10000);
 
 </script>
