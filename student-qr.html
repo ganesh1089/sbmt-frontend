@@ -107,8 +107,6 @@ h2 { margin: 5px 0; }
 <script>
 
 const params = new URLSearchParams(window.location.search);
-
-// 🔥 FIXED: only token supported
 const token = params.get("token");
 
 const API = "https://sbmt-backend.onrender.com";
@@ -124,7 +122,7 @@ async function loadData() {
     const res = await fetch(`${API}/api/qr/student/${token}`);
     const data = await res.json();
 
-    if (!res.ok || !data) {
+    if (!res.ok || !data || !data.student) {
       console.log("API ERROR:", data);
       alert(data.message || "Student not found ❌");
       return;
@@ -144,7 +142,7 @@ async function loadData() {
 
     // ================= ATTENDANCE =================
     const todayEl = document.getElementById("today");
-    const status = data.todayAttendance;
+    const status = data?.todayAttendance || "N/A";
 
     if (status === "P" || status === "Present") {
       todayEl.innerHTML = '<span class="badge present">Present</span>';
@@ -158,18 +156,20 @@ async function loadData() {
 
     // ================= MONTHLY =================
     document.getElementById("monthly").innerText =
-      data.attendancePercentage || 0;
+      data?.attendancePercentage || 0;
 
     // ================= MARKS =================
     const table = document.getElementById("marksTable");
     table.innerHTML = "";
 
-    if (Array.isArray(data.marks) && data.marks.length > 0) {
-      data.marks.forEach(m => {
+    const marks = data?.marks || [];
+
+    if (marks.length > 0) {
+      marks.forEach(m => {
         table.innerHTML += `
           <tr>
-            <td>${m.subject || "-"}</td>
-            <td>${m.marksObtained ?? 0}/${m.totalMarks ?? 0}</td>
+            <td>${m?.subject || "-"}</td>
+            <td>${m?.marksObtained ?? 0}/${m?.totalMarks ?? 0}</td>
           </tr>
         `;
       });
@@ -179,6 +179,7 @@ async function loadData() {
 
   } catch (err) {
     console.log("ERROR:", err);
+    alert("Server error ❌");
   }
 }
 

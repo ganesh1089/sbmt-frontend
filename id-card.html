@@ -205,13 +205,15 @@ async function loadStudent() {
     // ================= QR =================
     document.getElementById("qrcode").innerHTML = "";
 
-    const qrValue = `${window.location.origin}/student-profile.html?token=${s.qrToken}`;
+const FRONTEND_URL = "https://sbmt-frontend.vercel.app";
 
-    new QRCode(document.getElementById("qrcode"), {
-      text: qrValue,
-      width: 120,
-      height: 120
-    });
+const qrValue = `${FRONTEND_URL}/student-profile.html?token=${s.qrToken}`;
+
+new QRCode(document.getElementById("qrcode"), {
+  text: qrValue,
+  width: 120,
+  height: 120
+});
 
   } catch (err) {
     console.log(err);
