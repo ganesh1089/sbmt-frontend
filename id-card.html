@@ -8,7 +8,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <style>
-
 body {
   font-family: Arial;
   background: #e5e7eb;
@@ -18,7 +17,6 @@ body {
   height: 100vh;
 }
 
-/* CARD */
 .card {
   width: 380px;
   background: white;
@@ -27,15 +25,11 @@ body {
   box-shadow: 0 15px 35px rgba(0,0,0,0.2);
 }
 
-/* HEADER */
 .header {
   background: linear-gradient(135deg, #3b82f6, #6366f1);
   color: white;
   text-align: center;
   padding: 12px;
-
-  -webkit-print-color-adjust: exact;
-  print-color-adjust: exact;
 }
 
 .header img {
@@ -46,7 +40,6 @@ body {
   border: 2px solid white;
 }
 
-/* BODY */
 .body {
   display: flex;
   padding: 15px;
@@ -68,32 +61,12 @@ body {
   margin: 4px 0;
 }
 
-/* QR */
 #qrcode {
   display: flex;
   justify-content: center;
   padding: 10px;
 }
 
-/* FOOTER */
-.footer {
-  display: flex;
-  justify-content: space-between;
-  padding: 12px;
-  font-size: 11px;
-}
-
-.sign {
-  text-align: center;
-}
-
-.sign div {
-  border-top: 1px solid black;
-  width: 90px;
-  margin-top: 25px;
-}
-
-/* BUTTON */
 button {
   width: 100%;
   padding: 10px;
@@ -104,23 +77,9 @@ button {
   cursor: pointer;
 }
 
-/* PRINT */
 @media print {
-  body {
-    background: #e5e7eb !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
-  .card {
-    box-shadow: none;
-  }
-
-  button {
-    display: none;
-  }
+  button { display: none; }
 }
-
 </style>
 </head>
 
@@ -148,18 +107,6 @@ button {
 
   <div id="qrcode"></div>
 
-  <div class="footer">
-    <div class="sign">
-      <div></div>
-      Principal
-    </div>
-
-    <div class="sign">
-      <div></div>
-      HOD
-    </div>
-  </div>
-
   <button onclick="window.print()">Print / Download</button>
 
 </div>
@@ -167,54 +114,53 @@ button {
 <script>
 
 const params = new URLSearchParams(window.location.search);
-const studentId = params.get("studentId");
 
-// 🔥 CHANGE THIS IN PRODUCTION IF NEEDED
+// 🔥 FIXED: NOW USING TOKEN (NOT studentId)
+const token = params.get("token");
+
 const API = window.location.origin;
 
 async function loadStudent() {
   try {
 
-    if (!studentId) {
-      alert("Invalid Student ID");
+    if (!token) {
+      alert("Invalid QR Token");
       return;
     }
 
-    const res = await fetch(`${API}/api/qr/student/${studentId}`);
+    const res = await fetch(`${API}/api/qr/student/${token}`);
     const data = await res.json();
 
-    if (!res.ok || !data) {
+    if (!res.ok) {
       alert(data.message || "Student not found ❌");
       return;
     }
 
-    // ================= TEXT =================
-    document.getElementById("name").innerText = data.name || "-";
-    document.getElementById("father").innerText = "Father: " + (data.fatherName || "-");
-    document.getElementById("class").innerText = "Class: " + (data.className || "-");
-    document.getElementById("mobile").innerText = "Mobile: " + (data.mobile || "-");
-    document.getElementById("admission").innerText = "Admission: " + (data.admissionNo || "-");
+    // ================= STUDENT DATA =================
+    const s = data.student;
+
+    document.getElementById("name").innerText = s?.name || "-";
+    document.getElementById("father").innerText = "Father: " + (s?.fatherName || "-");
+    document.getElementById("class").innerText = "Class: " + (s?.className || "-");
+    document.getElementById("mobile").innerText = "Mobile: " + (s?.mobile || "-");
+    document.getElementById("admission").innerText = "Admission: " + (s?.admissionNo || "-");
 
     // ================= PHOTO =================
     document.getElementById("photo").src =
-      data.photo
-        ? `${API}/uploads/${data.photo}`
+      s?.photo
+        ? `${API}/uploads/${s.photo}`
         : "https://via.placeholder.com/110x130";
 
-    // ================= QR FIXED =================
+    // ================= QR =================
     document.getElementById("qrcode").innerHTML = "";
 
-    if (data.student?._id || data.qrToken) {
+    const qrValue = s?.qrToken || s?._id;
 
-      const qrValue = data.qrToken || data.student?._id;
-
-      new QRCode(document.getElementById("qrcode"), {
-        text: qrValue,   // 🔥 ONLY TOKEN (FIXED)
-        width: 100,
-        height: 100
-      });
-
-    }
+    new QRCode(document.getElementById("qrcode"), {
+      text: qrValue,
+      width: 100,
+      height: 100
+    });
 
   } catch (err) {
     console.log(err);
