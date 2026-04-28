@@ -13,21 +13,29 @@ body {
 }
 
 .container {
-  max-width: 400px;
+  max-width: 420px;
   margin: auto;
   padding: 15px;
 }
 
 .card {
   background: white;
-  padding: 15px;
-  border-radius: 15px;
+  padding: 18px;
+  border-radius: 16px;
   margin-bottom: 15px;
   text-align: center;
   box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 }
 
-img {
+/* LOGO HEADER */
+.logo {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-bottom: 5px;
+}
+
+img.profile {
   width: 120px;
   height: 120px;
   border-radius: 50%;
@@ -68,7 +76,9 @@ h2 {
 
   <!-- PROFILE -->
   <div class="card">
-    <img id="photo" src="">
+    <img class="logo" src="https://sbmt-backend.onrender.com/uploads/logo.png" alt="logo">
+    
+    <img id="photo" class="profile">
     <h2 id="name">Loading...</h2>
     <p id="class"></p>
     <p id="admission"></p>
@@ -99,52 +109,70 @@ h2 {
 
 <script>
 
-// 🔥 GET TOKEN FROM URL
 const params = new URLSearchParams(window.location.search);
 const token = params.get("token");
 
-// 🔥 API CALL
+const API = "https://sbmt-backend.onrender.com";
+
+// 🔥 REALTIME REFRESH (every 10 sec)
 async function loadData() {
-  const res = await fetch(`https://sbmt-backend.onrender.com/api/student/qr/${token}`);
-  const data = await res.json();
+  try {
+    const res = await fetch(`${API}/api/student/qr/${token}`);
+    const data = await res.json();
 
-  // PROFILE
-  document.getElementById("name").innerText = data.name;
-  document.getElementById("class").innerText = "Class: " + data.className;
-  document.getElementById("admission").innerText = data.admissionNo;
+    if (!res.ok) {
+      console.log(data);
+      return;
+    }
 
-  document.getElementById("photo").src =
-    `https://sbmt-backend.onrender.com/uploads/${data.photo}`;
+    // PROFILE
+    document.getElementById("name").innerText = data.name;
+    document.getElementById("class").innerText = "Class: " + data.className;
+    document.getElementById("admission").innerText = data.admissionNo;
 
-  // ATTENDANCE
-  const todayEl = document.getElementById("today");
+    // PHOTO FIX
+    document.getElementById("photo").src =
+      data.photo
+        ? `${API}/uploads/${data.photo}`
+        : "https://via.placeholder.com/120";
 
-  if (data.todayAttendance === "P") {
-    todayEl.innerHTML = '<span class="badge present">Present</span>';
-  } else if (data.todayAttendance === "A") {
-    todayEl.innerHTML = '<span class="badge absent">Absent</span>';
-  } else {
-    todayEl.innerText = "N/A";
+    // ATTENDANCE
+    const todayEl = document.getElementById("today");
+
+    if (data.todayAttendance === "P") {
+      todayEl.innerHTML = '<span class="badge present">Present</span>';
+    } else if (data.todayAttendance === "A") {
+      todayEl.innerHTML = '<span class="badge absent">Absent</span>';
+    } else {
+      todayEl.innerText = "N/A";
+    }
+
+    document.getElementById("monthly").innerText =
+      data.monthlyAttendance;
+
+    // MARKS
+    const table = document.getElementById("marksTable");
+    table.innerHTML = "";
+
+    (data.marks || []).forEach(m => {
+      table.innerHTML += `
+        <tr>
+          <td>${m.subject}</td>
+          <td>${m.marksObtained}/${m.totalMarks}</td>
+        </tr>
+      `;
+    });
+
+  } catch (err) {
+    console.log("ERROR:", err);
   }
-
-  document.getElementById("monthly").innerText =
-    data.monthlyAttendance;
-
-  // MARKS
-  const table = document.getElementById("marksTable");
-  table.innerHTML = "";
-
-  data.marks.forEach(m => {
-    table.innerHTML += `
-      <tr>
-        <td>${m.subject}</td>
-        <td>${m.marksObtained}/${m.totalMarks}</td>
-      </tr>
-    `;
-  });
 }
 
+// initial load
 loadData();
+
+// 🔥 realtime update every 10 sec
+setInterval(loadData, 10000);
 
 </script>
 
