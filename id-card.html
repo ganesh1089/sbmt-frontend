@@ -116,12 +116,6 @@ button {
     box-shadow: none;
   }
 
-  .header {
-    background: linear-gradient(135deg, #3b82f6, #6366f1) !important;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
-
   button {
     display: none;
   }
@@ -144,7 +138,7 @@ button {
     <img id="photo" class="photo">
 
     <div class="info">
-      <p><b id="name"></b></p>
+      <p><b id="name">Loading...</b></p>
       <p id="father"></p>
       <p id="class"></p>
       <p id="mobile"></p>
@@ -180,7 +174,7 @@ const API = "https://sbmt-backend.onrender.com";
 async function loadStudent() {
   try {
 
-    if (!studentId || studentId === "null") {
+    if (!studentId) {
       alert("Invalid Student ID");
       return;
     }
@@ -188,35 +182,34 @@ async function loadStudent() {
     const res = await fetch(`${API}/api/qr/student/${studentId}`);
     const data = await res.json();
 
-    if (!res.ok) {
+    if (!res.ok || !data) {
       alert(data.message || "Student not found ❌");
       return;
     }
 
-    // ================= DATA =================
-    document.getElementById("name").innerText = data.name;
+    // ================= TEXT =================
+    document.getElementById("name").innerText = data.name || "-";
     document.getElementById("father").innerText = "Father: " + (data.fatherName || "-");
-    document.getElementById("class").innerText = "Class: " + data.className;
+    document.getElementById("class").innerText = "Class: " + (data.className || "-");
     document.getElementById("mobile").innerText = "Mobile: " + (data.mobile || "-");
     document.getElementById("admission").innerText = "Admission: " + (data.admissionNo || "-");
 
-    // ================= PHOTO FIX =================
-    let img = data.photo;
+    // ================= PHOTO =================
+    document.getElementById("photo").src =
+      data.photo
+        ? `${API}/uploads/${data.photo}`
+        : "https://via.placeholder.com/110x130";
 
-    if (img) {
-      img = img.replace("uploads/", "");
-      document.getElementById("photo").src = `${API}/uploads/${img}`;
-    } else {
-      document.getElementById("photo").src = "https://via.placeholder.com/110x130";
+    // ================= QR (IMPORTANT FIX) =================
+    document.getElementById("qrcode").innerHTML = "";
+
+    if (data.qrToken) {
+      new QRCode(document.getElementById("qrcode"), {
+        text: `${window.location.origin}/student-qr.html?token=${data.qrToken}`,
+        width: 100,
+        height: 100
+      });
     }
-
-    // ================= QR FIX =================
-    // ================= QR FIX =================
-new QRCode(document.getElementById("qrcode"), {
-  text: `${window.location.origin}/student-qr.html?token=${data.qrToken}`,
-  width: 100,
-  height: 100
-});
 
   } catch (err) {
     console.log(err);
