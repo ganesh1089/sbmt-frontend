@@ -118,27 +118,26 @@ async function loadData() {
       return;
     }
 
-    const res = await fetch(`${API}/api/student/qr/${token}`);
+    const res = await fetch(`${API}/api/qr/student/${token}`);
     const data = await res.json();
 
-    if (!res.ok) {
+    if (!res.ok || !data) {
       console.log("API ERROR:", data);
       return;
     }
 
-    // ================= PROFILE =================
-    document.getElementById("name").innerText = data.name || "-";
-    document.getElementById("class").innerText = "Class: " + (data.className || "-");
-    document.getElementById("admission").innerText = data.admissionNo || "-";
+    // ================= PROFILE FIX =================
+    document.getElementById("name").innerText = data.student?.name || "-";
+    document.getElementById("class").innerText = "Class: " + (data.student?.className || "-");
+    document.getElementById("admission").innerText = data.student?.admissionNo || "-";
 
     document.getElementById("photo").src =
-      data.photo
-        ? `${API}/uploads/${data.photo}`
+      data.student?.photo
+        ? `${API}/uploads/${data.student.photo}`
         : "https://via.placeholder.com/120";
 
-    // ================= ATTENDANCE FIX =================
+    // ================= ATTENDANCE =================
     const todayEl = document.getElementById("today");
-
     const status = data.todayAttendance;
 
     if (status === "P" || status === "Present") {
@@ -151,10 +150,11 @@ async function loadData() {
       todayEl.innerText = "N/A";
     }
 
+    // ================= MONTHLY FIX =================
     document.getElementById("monthly").innerText =
-      data.monthlyAttendance || 0;
+      data.attendancePercentage || 0;
 
-    // ================= MARKS FIX =================
+    // ================= MARKS =================
     const table = document.getElementById("marksTable");
     table.innerHTML = "";
 
