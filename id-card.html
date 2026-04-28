@@ -151,8 +151,9 @@ async function loadStudent() {
         ? `${API}/uploads/${s.photo}`
         : "https://via.placeholder.com/110x130";
 
-    // ================= QR =================
-   document.getElementById("qrcode").innerHTML = "";
+    // ================= QR ================
+
+document.getElementById("qrcode").innerHTML = "";
 
 const qrValue = `${window.location.origin}/student-profile.html?token=${s?.qrToken}`;
 
