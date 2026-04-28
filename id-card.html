@@ -152,15 +152,15 @@ async function loadStudent() {
         : "https://via.placeholder.com/110x130";
 
     // ================= QR =================
-    document.getElementById("qrcode").innerHTML = "";
+   document.getElementById("qrcode").innerHTML = "";
 
-    const qrValue = s?.qrToken || s?._id;
+const qrValue = `${window.location.origin}/student-profile.html?token=${s?.qrToken}`;
 
-    new QRCode(document.getElementById("qrcode"), {
-      text: qrValue,
-      width: 100,
-      height: 100
-    });
+new QRCode(document.getElementById("qrcode"), {
+  text: qrValue,
+  width: 100,
+  height: 100
+});
 
   } catch (err) {
     console.log(err);
