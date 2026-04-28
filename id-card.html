@@ -154,17 +154,16 @@ button {
 </div>
 
 <script>
-
 const params = new URLSearchParams(window.location.search);
-const studentId = params.get("studentId"); // ✅ FIXED
+const studentId = params.get("studentId");
 
 const API = "https://sbmt-backend.onrender.com";
 
 async function loadStudent() {
   try {
 
-    if (!studentId) {
-      alert("Invalid Student ID ❌");
+    if (!studentId || studentId === "null") {
+      alert("Invalid Student ID");
       return;
     }
 
@@ -172,38 +171,33 @@ async function loadStudent() {
 
     const text = await res.text();
 
-    let student;
+    let data;
     try {
-      student = JSON.parse(text);
+      data = JSON.parse(text);
     } catch (e) {
       console.log("NOT JSON RESPONSE:", text);
-      alert("Server error ❌");
+      alert("Server error ❌ check backend route");
       return;
     }
 
     if (!res.ok) {
-      alert("Student not found ❌");
+      alert(data.message || "Student not found ❌");
       return;
     }
 
-    // ================= DATA =================
-    document.getElementById("name").innerText = student.name || "-";
-    document.getElementById("father").innerText = "Father: " + (student.fatherName || "-");
-    document.getElementById("class").innerText = "Class: " + (student.className || "-");
-    document.getElementById("mobile").innerText = "Mobile: " + (student.mobile || "-");
-    document.getElementById("dob").innerText = "DOB: " + (student.dob || "-");
-    document.getElementById("admission").innerText = "Admission: " + (student.admissionNo || "-");
+    document.getElementById("name").innerText = data.name;
+    document.getElementById("father").innerText = "Father: " + data.fatherName;
+    document.getElementById("class").innerText = "Class: " + data.className;
+    document.getElementById("mobile").innerText = "Mobile: " + data.mobile;
+    document.getElementById("admission").innerText = "Admission: " + (data.admissionNo || "-");
 
     document.getElementById("photo").src =
-      student.photo
-        ? `${API}/uploads/${student.photo}`
+      data.photo
+        ? `${API}/uploads/${data.photo}`
         : "https://via.placeholder.com/110x130";
 
-    // ================= QR FIX =================
-    const qrUrl = `${window.location.origin}/student-report.html?studentId=${student._id}`;
-
     new QRCode(document.getElementById("qrcode"), {
-      text: qrUrl,
+      text: `${window.location.origin}/id-card.html?studentId=${data._id}`,
       width: 100,
       height: 100
     });
@@ -215,8 +209,6 @@ async function loadStudent() {
 }
 
 loadStudent();
-
 </script>
-
 </body>
 </html>
