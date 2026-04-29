@@ -5,7 +5,6 @@
 <title>Student Login - SBMT</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Font Awesome (Eye Icon Fix) -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
 <style>
@@ -21,7 +20,6 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-
   background: linear-gradient(-45deg, #3b82f6, #06b6d4, #8b5cf6, #22c55e);
   background-size: 400% 400%;
   animation: bgMove 10s ease infinite;
@@ -33,7 +31,6 @@ body {
   100% { background-position: 0% 50%; }
 }
 
-/* bubbles */
 .bubble {
   position: absolute;
   border-radius: 50%;
@@ -49,7 +46,6 @@ body {
   50%{transform:translateY(-30px);}
 }
 
-/* card */
 .box {
   width: 360px;
   padding: 30px;
@@ -59,12 +55,6 @@ body {
   box-shadow: 0 8px 30px rgba(0,0,0,0.3);
   text-align: center;
   color: white;
-  animation: fadeIn 0.8s ease;
-}
-
-@keyframes fadeIn {
-  from {opacity:0; transform:scale(0.8);}
-  to {opacity:1; transform:scale(1);}
 }
 
 .box img {
@@ -86,7 +76,6 @@ input {
   outline: none;
 }
 
-/* password wrapper */
 .pass-wrapper {
   position: relative;
 }
@@ -104,7 +93,6 @@ input {
   color: #333;
 }
 
-/* button */
 button {
   width: 100%;
   padding: 12px;
@@ -117,11 +105,6 @@ button {
   cursor: pointer;
 }
 
-button:hover {
-  transform: scale(1.05);
-}
-
-/* messages */
 .msg {
   margin-top: 10px;
   font-size: 13px;
@@ -150,7 +133,8 @@ button:hover {
 
 <div id="loginNotif" class="notif">Loading notifications...</div>
 
-<input type="text" id="username" placeholder="Roll No / Username">
+<!-- ✅ FIXED PLACEHOLDER -->
+<input type="text" id="username" placeholder="Enter Username">
 
 <div class="pass-wrapper">
   <input type="password" id="password" placeholder="Enter password">
@@ -179,10 +163,10 @@ function togglePassword() {
   }
 }
 
-// LOGIN
+// ✅ FINAL FIXED LOGIN
 async function login() {
-  const username = document.getElementById("username").value;
-  const password = document.getElementById("password").value;
+  const username = document.getElementById("username").value.trim().toLowerCase();
+  const password = document.getElementById("password").value.trim();
   const msg = document.getElementById("msg");
 
   if (!username || !password) {
@@ -206,7 +190,11 @@ async function login() {
       return;
     }
 
+    // 🔥 IMPORTANT FIX (STRUCTURE MATCH)
     localStorage.setItem("student", JSON.stringify(data));
+
+    // 🔥 SESSION TIME SAVE
+    localStorage.setItem("loginTime", Date.now());
 
     msg.innerText = "Login successful ✔";
     msg.style.color = "#00ff99";
@@ -219,10 +207,11 @@ async function login() {
 
   } catch (err) {
     msg.innerText = "Server error!";
+    msg.style.color = "#ff4d4d";
   }
 }
 
-// NOTIFICATIONS
+// 🔔 NOTIFICATIONS
 let lastSeen = Number(localStorage.getItem("notifSeen")) || 0;
 let firstLoad = true;
 
@@ -231,14 +220,12 @@ async function checkNotifications() {
     const res = await fetch(`${BACKEND_URL}/api/hod/notifications/public`);
     const data = await res.json();
 
-    if (data.latest) {
-     document.getElementById("loginNotif").innerText =
-  data.latest ? "🔔 " + data.latest : "No new notifications";
-    }
+    document.getElementById("loginNotif").innerText =
+      data.latest ? "🔔 " + data.latest : "No new notifications";
 
     if (!firstLoad && data.count > lastSeen) {
-  alert("🔔 New Notification Available!");
-}
+      alert("🔔 New Notification Available!");
+    }
 
     firstLoad = false;
 

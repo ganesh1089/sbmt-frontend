@@ -222,6 +222,65 @@ tr:hover {
 
 <script>
 const BACKEND_URL = "https://sbmt-backend.onrender.com";
+
+/* ================= SAFE LOGIN CHECK ================= */
+const storedRaw = localStorage.getItem("student");
+
+if (!storedRaw) {
+  alert("Login expired!");
+  window.location.href = "student-login.html";
+}
+
+let parsed;
+
+try {
+  parsed = JSON.parse(storedRaw);
+} catch (e) {
+  localStorage.removeItem("student");
+  alert("Session corrupted! Login again.");
+  window.location.href = "student-login.html";
+}
+
+if (!parsed || !parsed.student) {
+  localStorage.removeItem("student");
+  alert("Login expired!");
+  window.location.href = "student-login.html";
+}
+
+/* ================= SESSION TIME CHECK ================= */
+const loginTime = localStorage.getItem("loginTime");
+
+if (!loginTime || Date.now() - loginTime > 24 * 60 * 60 * 1000) {
+  localStorage.clear();
+  alert("Session expired! Login again.");
+  window.location.href = "student-login.html";
+}
+
+/* ================= STUDENT DATA ================= */
+const studentData = parsed.student;
+const studentId = studentData.id;
+const className = studentData.className;
+
+console.log("Student ID:", studentId);
+
+/* ================= PROFILE ================= */
+document.getElementById("name").innerText = studentData.name;
+document.getElementById("roll").innerText = studentData.rollNo;
+document.getElementById("class").innerText = studentData.className;
+
+/* ================= NAVIGATION ================= */
+function show(id){
+  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+}
+
+/* ================= LOGOUT ================= */
+function logout(){
+  localStorage.clear();
+  window.location.href = "student-login.html";
+}
+
+/* ================= MONTH SELECT ================= */
 const months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
 const monthSelect = document.getElementById("monthSelect");
 
@@ -233,36 +292,6 @@ months.forEach((m,i)=>{
 });
 
 monthSelect.value = new Date().getMonth();
-const stored = JSON.parse(localStorage.getItem("student"));
-
-if (!stored || !stored.student) {
-  alert("Login expired!");
-  window.location.href = "student-login.html";
-}
-
-const studentData = stored.student;
-const studentId = studentData.id;
-const className = studentData.className;
-
-
-console.log("Student ID:", studentId);
-
-// 🔥 FILL PROFILE (FIXED)
-document.getElementById("name").innerText = studentData.name;
-document.getElementById("roll").innerText = studentData.rollNo;
-document.getElementById("class").innerText = studentData.className;
-
-// 🔥 NAVIGATION
-function show(id){
-  document.querySelectorAll(".section").forEach(s => s.classList.remove("active"));
-  document.getElementById(id).classList.add("active");
-}
-
-// 🔥 LOGOUT
-function logout(){
-  localStorage.removeItem("student");
-  window.location.href = "student-login.html";
-}
 
 /* ================= ATTENDANCE ================= */
 async function loadAttendance() {
@@ -315,6 +344,9 @@ async function loadAttendance() {
 async function loadMarks() {
   try {
     const res = await fetch(`${BACKEND_URL}/api/marks/student/${studentId}`);
+
+    if (!res.ok) throw new Error("Marks API error");
+
     const data = await res.json();
 
     if (!Array.isArray(data) || data.length === 0) {
@@ -325,14 +357,15 @@ async function loadMarks() {
 
     document.getElementById("marksBox").innerHTML =
       data.map(m => {
-        let color = "#22c55e"; // green
-        if (m.marks < m.totalMarks * 0.4) color = "#ef4444"; // red
-        else if (m.marks < m.totalMarks * 0.7) color = "#f59e0b"; // yellow
+        let color = "#22c55e";
+
+        if (m.marks < m.totalMarks * 0.4) color = "#ef4444";
+        else if (m.marks < m.totalMarks * 0.7) color = "#f59e0b";
 
         return `
-          <tr style="transition:0.3s;">
+          <tr>
             <td>${m.subject}</td>
-            <td>${m.examType.toUpperCase()}</td>
+            <td>${m.examType?.toUpperCase() || "-"}</td>
             <td style="color:${color}; font-weight:bold;">
               ${m.marks}/${m.totalMarks}
             </td>
@@ -342,15 +375,18 @@ async function loadMarks() {
       }).join("");
 
   } catch (err) {
-    console.log(err);
+    console.log("Marks ERROR:", err);
   }
 }
+
 /* ================= NOTIFICATIONS ================= */
 async function loadNotifications() {
   try {
     const res = await fetch(
       `${BACKEND_URL}/api/hod/notifications/student/${className}`
     );
+
+    if (!res.ok) throw new Error("Notification API error");
 
     const data = await res.json();
 
@@ -379,22 +415,42 @@ async function loadNotifications() {
         </div>
       `).join("");
 
-    // ✅ 🔥 YE LINE ADD KAR
     localStorage.setItem("notifSeen", data.length);
 
   } catch (err) {
-    console.log("Notification error", err);
+    console.log("Notification ERROR:", err);
   }
 }
 
 setInterval(loadNotifications, 5000);
 
+// 🔥 DYNAMIC ROLL NUMBER
+async function updateRollNumber() {
+  try {
+    const res = await fetch(`${BACKEND_URL}/api/students`);
+    const students = await res.json();
 
+    if (!Array.isArray(students)) return;
+
+    // find index
+    const index = students.findIndex(
+      (s) => String(s._id) === String(studentId)
+    );
+
+    if (index !== -1) {
+      document.getElementById("roll").innerText = index + 1;
+    }
+
+  } catch (err) {
+    console.log("Roll update error:", err);
+  }
+}
 
 /* ================= INIT ================= */
 function init() {
   loadAttendance();
   loadMarks();
+  updateRollNumber();
   loadNotifications();
 }
 
