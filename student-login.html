@@ -112,10 +112,11 @@ button {
 
 .notif {
   background: rgba(255,255,255,0.25);
-  padding: 8px;
-  border-radius: 8px;
+  padding: 10px;
+  border-radius: 10px;
   font-size: 13px;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
+  text-align: center;
 }
 </style>
 </head>
@@ -131,7 +132,9 @@ button {
 <img src="./assets/logo.png" alt="SBMT">
 <h2>Student Login</h2>
 
-<div id="loginNotif" class="notif">Loading notifications...</div>
+<div id="loginNotif" class="notif">
+  🔔 Checking updates...
+</div>
 
 <!-- ✅ FIXED PLACEHOLDER -->
 <input type="text" id="username" placeholder="Enter Username">
@@ -150,6 +153,7 @@ button {
 <script>
 const BACKEND_URL = "https://sbmt-backend.onrender.com";
 
+/* ================= PASSWORD TOGGLE ================= */
 function togglePassword() {
   const pass = document.getElementById("password");
   const icon = document.getElementById("eyeIcon");
@@ -163,7 +167,7 @@ function togglePassword() {
   }
 }
 
-// ✅ FINAL FIXED LOGIN
+/* ================= LOGIN ================= */
 async function login() {
   const username = document.getElementById("username").value.trim().toLowerCase();
   const password = document.getElementById("password").value.trim();
@@ -190,11 +194,14 @@ async function login() {
       return;
     }
 
-    // 🔥 IMPORTANT FIX (STRUCTURE MATCH)
+    // ✅ Save student data
     localStorage.setItem("student", JSON.stringify(data));
 
-    // 🔥 SESSION TIME SAVE
+    // ✅ session time
     localStorage.setItem("loginTime", Date.now());
+
+    // 🔥 IMPORTANT: notification clear after login
+    localStorage.removeItem("notifSeen");
 
     msg.innerText = "Login successful ✔";
     msg.style.color = "#00ff99";
@@ -210,10 +217,10 @@ async function login() {
     msg.style.color = "#ff4d4d";
   }
 }
-
-// 🔔 NOTIFICATIONS
+// ================= CHECK NOTIFICATIONS =================
 let lastSeen = Number(localStorage.getItem("notifSeen")) || 0;
 let firstLoad = true;
+let alertShown = false; // 🔥 important
 
 async function checkNotifications() {
   try {
@@ -223,8 +230,10 @@ async function checkNotifications() {
     document.getElementById("loginNotif").innerText =
       data.latest ? "🔔 " + data.latest : "No new notifications";
 
-    if (!firstLoad && data.count > lastSeen) {
+    // 🔥 ALERT ONLY ONCE PER SESSION
+    if (!firstLoad && data.count > lastSeen && !alertShown) {
       alert("🔔 New Notification Available!");
+      alertShown = true; // ek baar ke baad band
     }
 
     firstLoad = false;
@@ -235,7 +244,7 @@ async function checkNotifications() {
 }
 
 checkNotifications();
-let notifInterval = setInterval(checkNotifications, 5000);
+setInterval(checkNotifications, 5000);
 </script>
 
 </body>

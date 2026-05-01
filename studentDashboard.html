@@ -379,14 +379,11 @@ async function loadMarks() {
   }
 }
 
-/* ================= NOTIFICATIONS ================= */
 async function loadNotifications() {
   try {
     const res = await fetch(
       `${BACKEND_URL}/api/hod/notifications/student/${className}`
     );
-
-    if (!res.ok) throw new Error("Notification API error");
 
     const data = await res.json();
 
@@ -412,33 +409,43 @@ async function loadNotifications() {
               ? `<a href="${BACKEND_URL}/${n.file_path}" target="_blank">📎 File</a>`
               : ""
           }
+
+          <p style="font-size:12px; margin-top:5px;">✅ Seen</p>
         </div>
       `).join("");
 
-    localStorage.setItem("notifSeen", data.length);
+    // 🔥 BEST: store last notification ID
+    const latestId = data[0]?._id;
+    if (latestId) {
+      localStorage.setItem("notifSeen", latestId);
+    }
 
   } catch (err) {
     console.log("Notification ERROR:", err);
   }
 }
 
-setInterval(loadNotifications, 5000);
-
 // 🔥 DYNAMIC ROLL NUMBER
 async function updateRollNumber() {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/students`);
+    const res = await fetch(`${BACKEND_URL}/api/students`, {
+      headers: {
+        Authorization: "Bearer " + localStorage.getItem("token")
+      }
+    });
+
     const students = await res.json();
 
     if (!Array.isArray(students)) return;
 
-    // find index
     const index = students.findIndex(
       (s) => String(s._id) === String(studentId)
     );
 
     if (index !== -1) {
       document.getElementById("roll").innerText = index + 1;
+    } else {
+      document.getElementById("roll").innerText = "-";
     }
 
   } catch (err) {

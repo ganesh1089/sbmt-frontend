@@ -27,11 +27,16 @@ body {
   box-shadow: 0 5px 20px rgba(0,0,0,0.2);
 }
 
+.logo-box {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 8px;
+}
+
 .logo {
-  width: 60px;
-  height: 60px;
-  object-fit: cover;
-  margin-bottom: 5px;
+  width: 55px;
+  height: 55px;
+  object-fit: contain;
 }
 
 img.profile {
@@ -73,9 +78,11 @@ h2 { margin: 5px 0; }
 
   <!-- PROFILE -->
   <div class="card">
-    <img class="logo" src="https://sbmt-backend.onrender.com/uploads/logo.png">
-
-    <img id="photo" class="profile">
+    <div class="logo-box">
+  <img class="logo" src="./assets/logo.png">
+</div>
+<h3 style="margin: 5px 0;">SBMT COLLEGE</h3>
+<img id="photo" class="profile">
     <h2 id="name">Loading...</h2>
     <p id="class"></p>
     <p id="admission"></p>
