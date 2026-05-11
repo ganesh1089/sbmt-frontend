@@ -1,11 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
   <meta charset="UTF-8">
   <title>SBMT Portal</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="theme-color" content="#3b82f6">
+
+  <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("./service-worker.js")
+      .then(() => console.log("PWA Ready ✅"))
+      .catch(err => console.log(err));
+  }
+  </script>
+<style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
