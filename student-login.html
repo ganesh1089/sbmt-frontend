@@ -177,8 +177,18 @@ function togglePassword() {
 
 /* ================= LOGIN ================= */
 async function login() {
-  const username = document.getElementById("username").value.trim().toLowerCase();
-  const password = document.getElementById("password").value.trim();
+
+  const username =
+    document.getElementById("username")
+    .value
+    .trim()
+    .toLowerCase();
+
+  const password =
+    document.getElementById("password")
+    .value
+    .trim();
+
   const msg = document.getElementById("msg");
 
   if (!username || !password) {
@@ -188,41 +198,73 @@ async function login() {
   }
 
   try {
-    const res = await fetch(`${BACKEND_URL}/api/students/login`, {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ username, password })
-    });
 
-    const data = await res.json();
+    const res = await fetch(
+      `${BACKEND_URL}/api/students/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          username,
+          password
+        })
+      }
+    );
+
+    // 🔥 SAFE JSON
+    let data = {};
+
+    try {
+      data = await res.json();
+    } catch {
+      data = {};
+    }
+
+    console.log("LOGIN RESPONSE:", data);
 
     if (!res.ok) {
-      msg.innerText = data.message || "Login failed";
+      msg.innerText =
+        data.message || "Login failed";
+
       msg.style.color = "#ff4d4d";
       return;
     }
 
-    // ✅ Save student data
-    localStorage.setItem("student", JSON.stringify(data));
+    // ✅ save student
+    localStorage.setItem(
+      "student",
+      JSON.stringify(data)
+    );
 
-    // ✅ session time
-    localStorage.setItem("loginTime", Date.now());
+    // ✅ login time
+    localStorage.setItem(
+      "loginTime",
+      Date.now()
+    );
 
-    // 🔥 IMPORTANT: notification clear after login
-    localStorage.removeItem("notifSeen");
+    msg.innerText =
+      "Login successful ✔";
 
-    msg.innerText = "Login successful ✔";
     msg.style.color = "#00ff99";
 
     clearInterval(notifInterval);
 
     setTimeout(() => {
-      window.location.href = "studentDashboard.html";
+      window.location.href =
+        "studentDashboard.html";
     }, 800);
 
   } catch (err) {
-    msg.innerText = "Server error!";
-    msg.style.color = "#ff4d4d";
+
+    console.log("LOGIN ERROR:", err);
+
+    msg.innerText =
+      "Server error!";
+
+    msg.style.color =
+      "#ff4d4d";
   }
 }
 // ================= CHECK NOTIFICATIONS =================
