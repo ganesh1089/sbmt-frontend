@@ -3,432 +3,439 @@
   <head>
     <meta charset="UTF-8" />
     <title>SBMT ERP Dashboard</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
-/* ===== BODY ===== */
-body {
-  margin: 0;
-  font-family: Arial;
-  background: linear-gradient(to right, #b6fbff, #83a4d4);
-  color: #0f172a;
-}
+      /* ===== BODY ===== */
+      body {
+        margin: 0;
+        font-family: Arial;
+        background: linear-gradient(to right, #b6fbff, #83a4d4);
+        color: #0f172a;
+      }
 
-/* ===== SIDEBAR ===== */
-.sidebar {
-  width: 220px;
-  height: calc(100vh - 30px);
-  position: fixed;
-  margin: 15px;
-  border-radius: 18px;
+      /* ===== SIDEBAR ===== */
+      .sidebar {
+        width: 220px;
+        height: calc(100vh - 30px);
+        position: fixed;
+        margin: 15px;
+        border-radius: 18px;
 
-  background: linear-gradient(180deg, #5fa8d3, #3b82f6);
-  color: white;
+        background: linear-gradient(180deg, #5fa8d3, #3b82f6);
+        color: white;
 
-  padding-top: 20px;
+        padding-top: 20px;
 
-  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
 
-  display: flex;
-  flex-direction: column;
+        display: flex;
+        flex-direction: column;
 
-  /* 🔥 animation */
-  animation: slideIn 0.6s ease;
-}
+        /* 🔥 animation */
+        animation: slideIn 0.6s ease;
+      }
 
-/* ===== SIDEBAR TITLE ===== */
-.sidebar h2 {
-  text-align: center;
-  margin-bottom: 20px;
-}
+      /* ===== SIDEBAR TITLE ===== */
+      .sidebar h2 {
+        text-align: center;
+        margin-bottom: 20px;
+      }
 
-/* ===== SIDEBAR BUTTONS ===== */
-.sidebar button {
-  width: 90%;
-  margin: 6px auto;
-  padding: 12px;
-  background: transparent;
-  border: none;
-  color: white;
-  text-align: left;
-  cursor: pointer;
-  border-radius: 10px;
-  transition: 0.3s;
-}
+      /* ===== SIDEBAR BUTTONS ===== */
+      .sidebar button {
+        width: 90%;
+        margin: 6px auto;
+        padding: 12px;
+        background: transparent;
+        border: none;
+        color: white;
+        text-align: left;
+        cursor: pointer;
+        border-radius: 10px;
+        transition: 0.3s;
+      }
 
-.sidebar button:hover {
-  background: rgba(255,255,255,0.2);
-  transform: translateX(6px);
-}
+      .sidebar button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateX(6px);
+      }
 
-.sidebar button:active {
-  transform: scale(0.95);
-}
+      .sidebar button:active {
+        transform: scale(0.95);
+      }
 
-/* ===== MAIN ===== */
-.main {
-  margin-left: 250px;
-  padding: 20px;
-  animation: fadeIn 0.6s ease;
-}
+      /* ===== MAIN ===== */
+      .main {
+        margin-left: 250px;
+        padding: 20px;
+        animation: fadeIn 0.6s ease;
+      }
 
-/* ===== SECTION ===== */
-.section {
-  display: none;
-  opacity: 0;
-  transform: translateY(10px);
-  transition: 0.3s;
-}
+      /* ===== SECTION ===== */
+      .section {
+        display: none;
+        opacity: 0;
+        transform: translateY(10px);
+        transition: 0.3s;
+      }
 
-.section.active {
-  display: block;
-  opacity: 1;
-  transform: translateY(0);
-}
+      .section.active {
+        display: block;
+        opacity: 1;
+        transform: translateY(0);
+      }
 
-/* ===== CARD ===== */
-.card {
-  background: rgba(255,255,255,0.5);
-  backdrop-filter: blur(10px);
-  padding: 15px;
-  margin-bottom: 12px;
-  border-radius: 15px;
+      /* ===== CARD ===== */
+      .card {
+        background: rgba(255, 255, 255, 0.5);
+        backdrop-filter: blur(10px);
+        padding: 15px;
+        margin-bottom: 12px;
+        border-radius: 15px;
 
-  box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
 
-  transition: all 0.3s ease;
-}
+        transition: all 0.3s ease;
+      }
 
-.card:hover {
-  transform: translateY(-8px) scale(1.01);
-  box-shadow: 0 15px 35px rgba(0,0,0,0.2);
-}
+      .card:hover {
+        transform: translateY(-8px) scale(1.01);
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+      }
 
-/* ===== INPUT ===== */
-input,
-select {
-  padding: 10px;
-  margin-top: 8px;
-  width: 100%;
-  border-radius: 8px;
-  border: none;
-  outline: none;
+      /* ===== INPUT ===== */
+      input,
+      select {
+        padding: 10px;
+        margin-top: 8px;
+        width: 100%;
+        border-radius: 8px;
+        border: none;
+        outline: none;
 
-  background: rgba(255,255,255,0.8);
-}
+        background: rgba(255, 255, 255, 0.8);
+      }
 
-/* ===== BUTTON ===== */
-button {
-  padding: 10px;
-  margin-top: 8px;
-  width: 100%;
-  border-radius: 8px;
-  border: none;
-  font-size: 12px;
-  background: linear-gradient(135deg, #38bdf8, #6366f1);
-  color: white;
-  cursor: pointer;
-  transition: 0.3s;
-}
+      /* ===== BUTTON ===== */
+      button {
+        padding: 10px;
+        margin-top: 8px;
+        width: 100%;
+        border-radius: 8px;
+        border: none;
+        font-size: 12px;
+        background: linear-gradient(135deg, #38bdf8, #6366f1);
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+      }
 
-button:hover {
-  transform: scale(1.05);
-  filter: brightness(1.1);
-}
+      button:hover {
+        transform: scale(1.05);
+        filter: brightness(1.1);
+      }
 
-button:active {
-  transform: scale(0.95);
-}
+      button:active {
+        transform: scale(0.95);
+      }
 
-/* ===== TABLE ===== */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 13px;
-  background: white;
-  border-radius: 10px;
-  overflow: hidden;
-}
+      /* ===== TABLE ===== */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13px;
+        background: white;
+        border-radius: 10px;
+        overflow: hidden;
+      }
 
-th {
-  position: sticky;
-  top: 0;
-  background: linear-gradient(135deg, #38bdf8, #6366f1);
-  color: white;
-  padding: 8px;
-}
+      th {
+        position: sticky;
+        top: 0;
+        background: linear-gradient(135deg, #38bdf8, #6366f1);
+        color: white;
+        padding: 8px;
+      }
 
-td {
-  border: 1px solid #ddd;
-  text-align: center;
-  padding: 6px;
-}
+      td {
+        border: 1px solid #ddd;
+        text-align: center;
+        padding: 6px;
+      }
 
-/* ===== SMALL BUTTON ===== */
-.small-btn {
-  font-size: 10px;
-  padding: 3px 6px;
-  margin: 0;
-}
+      /* ===== SMALL BUTTON ===== */
+      .small-btn {
+        font-size: 10px;
+        padding: 3px 6px;
+        margin: 0;
+      }
 
-/* ===== HOME CARD ===== */
-.home-card {
-  padding: 20px;
-}
+      /* ===== HOME CARD ===== */
+      .home-card {
+        padding: 20px;
+      }
 
-.home-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+      .home-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
 
-.home-left,
-.home-center,
-.home-right {
-  flex: 1;
-}
+      .home-left,
+      .home-center,
+      .home-right {
+        flex: 1;
+      }
 
-.home-center {
-  text-align: center;
-}
+      .home-center {
+        text-align: center;
+      }
 
-.home-right {
-  text-align: right;
-  font-weight: bold;
-}
+      .home-right {
+        text-align: right;
+        font-weight: bold;
+      }
 
-/* ===== LOGO ===== */
-.home-logo {
-  height: 90px;
-  border-radius: 10%;
-  border: 3px solid white;
+      /* ===== LOGO ===== */
+      .home-logo {
+        height: 90px;
+        border-radius: 10%;
+        border: 3px solid white;
 
-  animation: float 3s ease-in-out infinite;
-  transition: 0.3s;
-}
+        animation: float 3s ease-in-out infinite;
+        transition: 0.3s;
+      }
 
-.home-logo:hover {
-  transform: scale(1.08);
-}
-/* DASHBOARD GRID */
-.dashboard-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
-  margin-top: 15px;
-}
+      .home-logo:hover {
+        transform: scale(1.08);
+      }
+      /* DASHBOARD GRID */
+      .dashboard-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 12px;
+        margin-top: 15px;
+      }
 
-/* SMALL CARDS */
-.dash-card {
-  background: rgba(255,255,255,0.7);
-  padding: 15px;
-  border-radius: 12px;
-  text-align: center;
+      /* SMALL CARDS */
+      .dash-card {
+        background: rgba(255, 255, 255, 0.7);
+        padding: 15px;
+        border-radius: 12px;
+        text-align: center;
 
-  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-  transition: 0.3s;
-}
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        transition: 0.3s;
+      }
 
-.dash-card:hover {
-  transform: translateY(-5px);
-}
+      .dash-card:hover {
+        transform: translateY(-5px);
+      }
 
-/* NUMBERS */
-.dash-card p {
-  font-size: 22px;
-  font-weight: bold;
-  margin-top: 5px;
-}
+      /* NUMBERS */
+      .dash-card p {
+        font-size: 22px;
+        font-weight: bold;
+        margin-top: 5px;
+      }
 
-/* ===== FLOATING BUTTONS ===== */
-.fab-container {
-  position: fixed;
-  bottom: 20px;
-  right: 20px;
+      /* ===== FLOATING BUTTONS ===== */
+      .fab-container {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
 
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
 
-  z-index: 999;
-}
+        z-index: 999;
+      }
 
-/* BUTTON STYLE */
-.fab-btn {
-  width: 55px;
-  height: 55px;
-  border-radius: 50%;
+      /* BUTTON STYLE */
+      .fab-btn {
+        width: 55px;
+        height: 55px;
+        border-radius: 50%;
 
-  font-size: 22px;
-  border: none;
-  color: white;
+        font-size: 22px;
+        border: none;
+        color: white;
 
-  cursor: pointer;
+        cursor: pointer;
 
-  box-shadow: 0 5px 20px rgba(0,0,0,0.3);
-  transition: 0.3s;
-}
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        transition: 0.3s;
+      }
 
-/* COLORS */
-.fab-btn.add {
-  background: linear-gradient(135deg, #10b981, #059669);
-}
+      /* COLORS */
+      .fab-btn.add {
+        background: linear-gradient(135deg, #10b981, #059669);
+      }
 
-.fab-btn.attend {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-}
+      .fab-btn.attend {
+        background: linear-gradient(135deg, #3b82f6, #2563eb);
+      }
 
-/* HOVER */
-.fab-btn:hover {
-  transform: scale(1.1);
-}
+      /* HOVER */
+      .fab-btn:hover {
+        transform: scale(1.1);
+      }
 
-.fab-btn:active {
-  transform: scale(0.95);
-}
+      .fab-btn:active {
+        transform: scale(0.95);
+      }
 
-/* .dash-card {
+      /* .dash-card {
   transition: 0.3s;
   border-radius: 14px;
 } */
 
-.dash-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-}
+      .dash-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+      }
 
-.dashboard-grid {
-  margin-top: 20px;
-}
-/* ================= RESPONSIVE DESIGN ================= */
+      .dashboard-grid {
+        margin-top: 20px;
+      }
+      /* ================= RESPONSIVE DESIGN ================= */
 
-/* TABLET + MOBILE */
-@media (max-width: 1024px) {
+      /* TABLET + MOBILE */
+      @media (max-width: 1024px) {
+        .sidebar {
+          width: 200px;
+          margin: 10px;
+        }
 
-  .sidebar {
-    width: 200px;
-    margin: 10px;
-  }
+        .main {
+          margin-left: 230px;
+        }
+      }
 
-  .main {
-    margin-left: 230px;
-  }
-}
+      /* MOBILE */
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+        }
 
-/* MOBILE */
-@media (max-width: 768px) {
+        /* SIDEBAR TOP BAR STYLE */
+        .sidebar {
+          position: relative;
+          width: 95%;
+          height: auto;
+          margin: 10px auto;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+          padding: 10px;
+        }
 
-  body {
-    flex-direction: column;
-  }
+        .sidebar button {
+          width: auto;
+          margin: 5px;
+          padding: 8px 10px;
+          font-size: 12px;
+          text-align: center;
+        }
 
-  /* SIDEBAR TOP BAR STYLE */
-  .sidebar {
-    position: relative;
-    width: 95%;
-    height: auto;
-    margin: 10px auto;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: center;
-    padding: 10px;
-  }
+        /* MAIN FULL WIDTH */
+        .main {
+          margin-left: 0;
+          padding: 10px;
+        }
 
-  .sidebar button {
-    width: auto;
-    margin: 5px;
-    padding: 8px 10px;
-    font-size: 12px;
-    text-align: center;
-  }
+        /* HOME HEADER STACK */
+        .home-header {
+          flex-direction: column;
+          text-align: center;
+          gap: 10px;
+        }
 
-  /* MAIN FULL WIDTH */
-  .main {
-    margin-left: 0;
-    padding: 10px;
-  }
+        .home-right {
+          text-align: center;
+        }
 
-  /* HOME HEADER STACK */
-  .home-header {
-    flex-direction: column;
-    text-align: center;
-    gap: 10px;
-  }
+        /* DASHBOARD GRID */
+        .dashboard-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
 
-  .home-right {
-    text-align: center;
-  }
+        /* TABLE SCROLL FIX */
+        table {
+          font-size: 11px;
+        }
 
-  /* DASHBOARD GRID */
-  .dashboard-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+        th,
+        td {
+          padding: 5px;
+        }
 
-  /* TABLE SCROLL FIX */
-  table {
-    font-size: 11px;
-  }
+        /* FLOAT BUTTON SMALL */
+        .fab-btn {
+          width: 45px;
+          height: 45px;
+          font-size: 18px;
+        }
+      }
 
-  th, td {
-    padding: 5px;
-  }
+      /* SMALL MOBILE */
+      @media (max-width: 480px) {
+        .dashboard-grid {
+          grid-template-columns: 1fr;
+        }
 
-  /* FLOAT BUTTON SMALL */
-  .fab-btn {
-    width: 45px;
-    height: 45px;
-    font-size: 18px;
-  }
-}
+        .login-card,
+        .card {
+          width: 95%;
+        }
 
-/* SMALL MOBILE */
-@media (max-width: 480px) {
+        input,
+        select,
+        button {
+          font-size: 13px;
+        }
+      }
+      /* ===== ANIMATIONS ===== */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(15px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
 
-  .dashboard-grid {
-    grid-template-columns: 1fr;
-  }
+      @keyframes slideIn {
+        from {
+          transform: translateX(-40px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
 
-  .login-card, .card {
-    width: 95%;
-  }
+      @keyframes float {
+        0% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-6px);
+        }
+        100% {
+          transform: translateY(0px);
+        }
+      }
 
-  input, select, button {
-    font-size: 13px;
-  }
-}
-/* ===== ANIMATIONS ===== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideIn {
-  from {
-    transform: translateX(-40px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes float {
-  0% { transform: translateY(0px); }
-  50% { transform: translateY(-6px); }
-  100% { transform: translateY(0px); }
-}
-      
-td, th {
-  padding: 6px;
-  font-size: 12px;
-}
-
+      td,
+      th {
+        padding: 6px;
+        font-size: 12px;
+      }
     </style>
   </head>
 
@@ -448,246 +455,251 @@ td, th {
       <button onclick="logout()">🚪 Logout</button>
     </div>
 
-      <!-- MAIN -->
-  <div class="main">
-    <!-- HOME -->
-    <div id="home" class="section active card home-card">
-      <!-- TOP BAR INSIDE CARD -->
-      <div class="home-header">
-        <!-- LEFT: LOGO -->
-        <div class="home-left">
-          <img src="./assets/logo.png" class="home-logo" alt="SBMT Logo">
+    <!-- MAIN -->
+    <div class="main">
+      <!-- HOME -->
+      <div id="home" class="section active card home-card">
+        <!-- TOP BAR INSIDE CARD -->
+        <div class="home-header">
+          <!-- LEFT: LOGO -->
+          <div class="home-left">
+            <img src="./assets/logo.png" class="home-logo" alt="SBMT Logo" />
+          </div>
+          <!-- CENTER: TITLE -->
+          <div class="home-center">
+            <h2>Welcome to SBMT</h2>
+          </div>
+          <!-- RIGHT: LIVE CLASS -->
+          <div class="home-right">Class: <span id="liveClass">--</span></div>
         </div>
-        <!-- CENTER: TITLE -->
-        <div class="home-center">
-          <h2>Welcome to SBMT </h2>
-        </div>
-        <!-- RIGHT: LIVE CLASS -->
-        <div class="home-right">
-          Class: <span id="liveClass">--</span>
+        <!-- 🔥 DASHBOARD BELOW -->
+        <div class="dashboard-grid">
+          <!-- TOTAL STUDENTS -->
+          <div class="dash-card">
+            <h4>Total Students</h4>
+            <p id="totalStudents">0</p>
+          </div>
+
+          <!-- PRESENT -->
+          <div class="dash-card">
+            <h4>Present</h4>
+            <p id="presentCount">0</p>
+          </div>
+
+          <!-- ABSENT -->
+          <div class="dash-card">
+            <h4>Absent</h4>
+            <p id="absentCount">0</p>
+          </div>
+
+          <!-- TOP STUDENTS -->
+          <div class="dash-card">
+            <h4>Top Attendance</h4>
+            <p id="topStudents">--</p>
+          </div>
         </div>
       </div>
-      <!-- 🔥 DASHBOARD BELOW -->
-<div class="dashboard-grid">
 
-  <!-- TOTAL STUDENTS -->
-  <div class="dash-card">
-    <h4>Total Students</h4>
-    <p id="totalStudents">0</p>
-  </div>
+      <!-- 🔥 FLOATING QUICK ACTIONS -->
+      <div class="fab-container">
+        <button class="fab-btn add" onclick="show('add')">➕</button>
 
-  <!-- PRESENT -->
-  <div class="dash-card">
-    <h4>Present</h4>
-    <p id="presentCount">0</p>
-  </div>
-
-  <!-- ABSENT -->
-  <div class="dash-card">
-    <h4>Absent</h4>
-    <p id="absentCount">0</p>
-  </div>
-
-  <!-- TOP STUDENTS -->
-  <div class="dash-card">
-    <h4>Top Attendance</h4>
-    <p id="topStudents">--</p>
-  </div>
-
-</div>
-    </div>
-
-
-<!-- 🔥 FLOATING QUICK ACTIONS -->
-<div class="fab-container">
-
-  <button class="fab-btn add" onclick="show('add')">
-    ➕
-  </button>
-
-  <button class="fab-btn attend" onclick="show('attendance')">
-    📅
-  </button>
-
-</div>
-      
+        <button class="fab-btn attend" onclick="show('attendance')">📅</button>
+      </div>
 
       <!-- ADD STUDENT -->
       <div id="add" class="section card">
-  <h3>Add Student</h3>
+        <h3>Add Student</h3>
 
-  <input id="name" placeholder="Name" />
-  <input id="fatherName" placeholder="Father Name" />
-  <input id="mobile" placeholder="Mobile" />
+        <input id="name" placeholder="Name" />
+        <input id="fatherName" placeholder="Father Name" />
+        <input id="mobile" placeholder="Mobile" />
 
-  <select id="gender">
-  <option value="">Select Gender</option>
-  <option value="Male">Male</option>
-  <option value="Female">Female</option>
-</select>
-  <input type="date" id="dob" />
+        <select id="gender">
+          <option value="">Select Gender</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+        <input type="date" id="dob" />
 
-  <!-- 🔥 NEW FIELDS -->
-  <input id="address" placeholder="Address" />
+        <!-- 🔥 NEW FIELDS -->
+        <input id="address" placeholder="Address" />
 
-  <label style="margin-top:8px; display:block;">Upload Photo</label>
-  <input id="photo" type="file" accept="image/*" />
+        <label style="margin-top: 8px; display: block">Upload Photo</label>
+        <input id="photo" type="file" accept="image/*" />
 
-  <small style="color:gray;">
-    * Details will be used for ID Card & QR system
-  </small>
+        <small style="color: gray">
+          * Details will be used for ID Card & QR system
+        </small>
 
-  <h4 id="classTitle"></h4>
+        <h4 id="classTitle"></h4>
 
-  <button onclick="addStudent()">Add Student</button>
-</div>
+        <button onclick="addStudent()">Add Student</button>
+      </div>
 
       <!-- STUDENT LIST -->
       <div id="list" class="section card">
-  <h3>Student List</h3>
+        <h3>Student List</h3>
 
-  <!-- 🔍 SEARCH BOX -->
-  <input 
-    type="text" 
-    id="searchStudentId" 
-    placeholder="Search student by name..."
-    oninput="searchStudentForID()"
-  />
+        <!-- 🔍 SEARCH BOX -->
+        <input
+          type="text"
+          id="searchStudentId"
+          placeholder="Search student by name..."
+          oninput="searchStudentForID()"
+        />
 
-  <!-- SEARCH RESULTS -->
-  <div id="searchResults" style="margin-top:10px;"></div>
+        <!-- SEARCH RESULTS -->
+        <div id="searchResults" style="margin-top: 10px"></div>
 
-  <hr>
+        <hr />
 
-  <!-- FULL LIST -->
-  <table>
-    <thead>
-      <tr>
-        <th>SR No</th>
-        <th>Name</th>
-        <th>Father Name</th>
-        <th>DOB</th>
-        <th>Class</th>
-        <th>Action</th> <!-- 🔥 NEW -->
-      </tr>
-    </thead>
-    <tbody id="studentTableBody"></tbody>
-  </table>
-</div>
-<div id="attendance" class="section card">
-  <h2>📅 Attendance System</h2>
+        <!-- FULL LIST -->
+        <table>
+          <thead>
+            <tr>
+              <th>SR No</th>
+              <th>Name</th>
+              <th>Father Name</th>
+              <th>DOB</th>
+              <th>Class</th>
+              <th>Action</th>
+              <!-- 🔥 NEW -->
+            </tr>
+          </thead>
+          <tbody id="studentTableBody"></tbody>
+        </table>
+      </div>
+      <div id="attendance" class="section card">
+        <h2>📅 Attendance System</h2>
 
-  <!-- TOP CONTROLS -->
-  <div style="display:flex; gap:6px; flex-wrap:wrap; margin:10px 0;">
+        <!-- TOP CONTROLS -->
+        <div style="display: flex; gap: 6px; flex-wrap: wrap; margin: 10px 0">
+          <input
+            type="date"
+            id="datePicker"
+            style="flex: 1; min-width: 120px"
+          />
 
-  <input type="date" id="datePicker" style="flex:1; min-width:120px;">
+          <button onclick="loadAttendance()" style="flex: 1">📥 Load</button>
 
-  <button onclick="loadAttendance()" style="flex:1;">📥 Load</button>
+          <button onclick="markHoliday()" style="flex: 1; background: #f59e0b">
+            🎉 Holiday
+          </button>
 
-  <button onclick="markHoliday()" style="flex:1; background:#f59e0b;">
-    🎉 Holiday
-  </button>
+          <button
+            onclick="saveAttendance()"
+            style="flex: 1; background: #10b981"
+          >
+            💾 Save
+          </button>
 
-  <button onclick="saveAttendance()" style="flex:1; background:#10b981;">
-    💾 Save
-  </button>
+          <button
+            onclick="markAllPresent()"
+            style="flex: 1; background: #6366f1"
+          >
+            ✅ All
+          </button>
+        </div>
+        <!---------------------------- attendance summaery -------------------------------------- -->
+        <div
+          id="attendanceSummary"
+          style="display: flex; gap: 10px; margin-top: 10px; font-weight: bold"
+        >
+          <div>👨‍🎓 Total: <span id="totalCount">0</span></div>
+          <div style="color: green">
+            ✅ Present: <span id="presentCount">0</span>
+          </div>
+          <div style="color: red">
+            ❌ Absent: <span id="absentCount">0</span>
+          </div>
+        </div>
+        <!-- 🔥 NEW: SEARCH -->
+        <input
+          type="text"
+          id="attendanceSearch"
+          placeholder="Search by Name or SR No (e.g. ganesh,1,3)"
+          oninput="filterAttendance()"
+        />
 
-  <button onclick="markAllPresent()" style="flex:1; background:#6366f1;">
-    ✅ All
-  </button>
+        <!-- 🔥 NEW: SCROLLABLE TABLE -->
+        <div
+          style="
+            max-height: 500px;
+            overflow-y: auto;
+            margin-top: 10px;
+            background: white;
+            border-radius: 10px;
+          "
+        >
+          <table style="width: 100%; border-collapse: collapse">
+            <thead
+              style="
+                position: sticky;
+                top: 0;
+                background: #38bdf8;
+                color: white;
+              "
+            >
+              <tr>
+                <th>Sr No</th>
+                <th>Name</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
 
-</div>
-<!---------------------------- attendance summaery -------------------------------------- -->
-<div id="attendanceSummary" style="
-  display:flex;
-  gap:10px;
-  margin-top:10px;
-  font-weight:bold;
-">
-  <div>👨‍🎓 Total: <span id="totalCount">0</span></div>
-  <div style="color:green;">✅ Present: <span id="presentCount">0</span></div>
-  <div style="color:red;">❌ Absent: <span id="absentCount">0</span></div>
-</div>
-  <!-- 🔥 NEW: SEARCH -->
-<input 
-  type="text" 
-  id="attendanceSearch" 
-  placeholder="Search by Name or SR No (e.g. ganesh,1,3)" 
-  oninput="filterAttendance()"
-/>
+            <tbody id="attendanceTable"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- DOWNLOAD SECTION -->
+      <div id="download" class="section card">
+        <!-- TOP LEFT HEADING -->
+        <h2 style="text-align: left; margin-bottom: 10px">
+          Download Student Report
+        </h2>
 
-  <!-- 🔥 NEW: SCROLLABLE TABLE -->
-  <div style="max-height:500px; overflow-y:auto; margin-top:10px; background:white; border-radius:10px;">
+        <!-- FULL CLASS DOWNLOAD -->
+        <button onclick="downloadClass()" style="margin-bottom: 10px">
+          Download Full Class PDF
+        </button>
 
-    <table style="width:100%; border-collapse:collapse;">
-      
-      <thead style="position:sticky; top:0; background:#38bdf8; color:white;">
-        <tr>
-          <th>Sr No</th>
-          <th>Name</th>
-          <th>Status</th>
-          <th>Action</th>
-        </tr>
-      </thead>
+        <!-- SEARCH BOX -->
+        <input
+          type="text"
+          id="searchStudent"
+          placeholder="Search student by name..."
+          oninput="filterStudents()"
+        />
 
-      <tbody id="attendanceTable"></tbody>
+        <!-- STUDENT LIST TABLE -->
+        <div style="margin-top: 15px; overflow: auto">
+          <table
+            style="width: 100%; border-collapse: collapse; font-size: 12px"
+          >
+            <thead>
+              <tr style="background: #007bff; color: white">
+                <th style="padding: 6px">Name</th>
+                <th style="padding: 6px">Class</th>
+                <th style="padding: 6px">Action</th>
+              </tr>
+            </thead>
 
-    </table>
+            <tbody id="studentListTable"></tbody>
+          </table>
+        </div>
+      </div>
+      <div id="password" class="section card">
+        <h3>🔒 Change Password</h3>
 
-  </div>
-</div>
-<!-- DOWNLOAD SECTION -->
-<div id="download" class="section card">
+        <input type="password" id="oldPassword" placeholder="Old Password" />
 
-  <!-- TOP LEFT HEADING -->
-  <h2 style="text-align:left; margin-bottom:10px;">
-    Download Student Report
-  </h2>
+        <input type="password" id="newPassword" placeholder="New Password" />
 
-  <!-- FULL CLASS DOWNLOAD -->
-  <button onclick="downloadClass()" style="margin-bottom:10px;">
-    Download Full Class PDF
-  </button>
+        <button onclick="changePassword()">Update Password</button>
+      </div>
 
-  <!-- SEARCH BOX -->
-  <input
-    type="text"
-    id="searchStudent"
-    placeholder="Search student by name..."
-    oninput="filterStudents()"
-  />
-
- 
-  <!-- STUDENT LIST TABLE -->
-  <div style="margin-top:15px; overflow:auto;">
-
-    <table style="width:100%; border-collapse: collapse; font-size:12px;">
-      <thead>
-        <tr style="background:#007bff; color:white;">
-          <th style="padding:6px;">Name</th>
-          <th style="padding:6px;">Class</th>
-          <th style="padding:6px;">Action</th>
-        </tr>
-      </thead>
-
-      <tbody id="studentListTable"></tbody>
-
-    </table>
-
-  </div>
-
-</div>
-<div id="password" class="section card">
-  <h3>🔒 Change Password</h3>
-
-  <input type="password" id="oldPassword" placeholder="Old Password" />
-
-  <input type="password" id="newPassword" placeholder="New Password" />
-
-  <button onclick="changePassword()">Update Password</button>
-</div>
-
- 
       <!-- MARKS -->
       <div id="marks" class="section card">
         <h3>📊 Marks Entry System</h3>
@@ -733,61 +745,67 @@ td, th {
     </div>
 
     <script>
-/* NAV */
-let currentAttendance = null;
-document.getElementById("liveClass").innerText =
-      localStorage.getItem("className") || "Not Assigned";
-  
+      /* NAV */
+      let currentAttendance = null;
+      document.getElementById("liveClass").innerText =
+        localStorage.getItem("className") || "Not Assigned";
 
       /* DATA */
       let students = [];
-      
+
       let allStudents = [];
 
       const teacherData = JSON.parse(localStorage.getItem("user"));
 
-if (!teacherData || !teacherData.className) {
-  alert("❌ Class not assigned to this teacher");
-  console.log("Teacher missing class:", teacherData);
-  throw new Error("Class not assigned");
-}
+      if (!teacherData || !teacherData.className) {
+        alert("❌ Class not assigned to this teacher");
+        console.log("Teacher missing class:", teacherData);
+        throw new Error("Class not assigned");
+      }
 
-const className = teacherData.className;
+      const className = teacherData.className;
 
-if (!className) {
-  alert("❌ Class not assigned to this teacher");
-  console.log("Teacher missing class:", teacher);
+      if (!className) {
+        alert("❌ Class not assigned to this teacher");
+        console.log("Teacher missing class:", teacher);
 
-  throw new Error("Class not assigned");
-}
+        throw new Error("Class not assigned");
+      }
 
-function openIDCard(studentId) {
-  if (!studentId) {
-    alert("Student not found ❌");
-    return;
-  }
+      function openIDCard(studentId) {
+        if (!studentId) {
+          alert("Student not found ❌");
+          return;
+        }
 
-  const url = `id-card.html?id=${studentId}`;
-  window.open(url, "_blank");
-}
-async function searchStudentForID() {
-  const value = document.getElementById("searchStudentId").value.toLowerCase();
+        const url = `id-card.html?id=${studentId}`;
+        window.open(url, "_blank");
+      }
+      async function searchStudentForID() {
+        const value = document
+          .getElementById("searchStudentId")
+          .value.toLowerCase();
 
-  const res = await fetch("https://sbmt-backend.onrender.com/api/students", {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
-  });
+        const res = await fetch(
+          "https://sbmt-backend.onrender.com/api/students",
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          },
+        );
 
-  const students = await res.json();
+        const students = await res.json();
 
-  const filtered = students.filter(s =>
-    s.name.toLowerCase().includes(value)
-  );
+        const filtered = students.filter((s) =>
+          s.name.toLowerCase().includes(value),
+        );
 
-  const box = document.getElementById("searchResults");
+        const box = document.getElementById("searchResults");
 
-  box.innerHTML = filtered.map(s => `
+        box.innerHTML = filtered
+          .map(
+            (s) => `
   <div style="
     background:white;
     padding:10px;
@@ -808,123 +826,126 @@ async function searchStudentForID() {
     </button>
 
   </div>
-`).join("");}
-   /* ADD STUDENT (FIXED & SAFE) */
-let isSubmitting = false;
-
-async function addStudent() {
-  if (isSubmitting) return;
-  isSubmitting = true;
-
-  try {
-    const name = document.getElementById("name").value.trim();
-    const fatherName = document.getElementById("fatherName").value.trim();
-    const mobile = document.getElementById("mobile").value.trim();
-    const gender = document.getElementById("gender").value;
-    const dob = document.getElementById("dob").value;
-    const address = document.getElementById("address").value.trim();
-    const photoFile = document.getElementById("photo").files[0];
-
-    // ================= VALIDATION =================
-    if (!name || !fatherName || !mobile || !gender || !dob) {
-      alert("All required fields fill karo ❌");
-      return;
-    }
-
-    if (!/^[A-Za-z ]+$/.test(name)) {
-      alert("Name only letters allowed ❌");
-      return;
-    }
-
-    if (!/^[0-9]{10}$/.test(mobile)) {
-      alert("Mobile must be 10 digits ❌");
-      return;
-    }
-
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Login required ❌");
-      return;
-    }
-
-    // ================= FORM DATA =================
-    const formData = new FormData();
-    formData.append("name", name);
-    formData.append("fatherName", fatherName);
-    formData.append("mobile", mobile);
-    formData.append("gender", gender);
-    formData.append("dob", dob);
-    formData.append("address", address);
-
-    if (photoFile) {
-      formData.append("photo", photoFile);
-    }
-
-    // ================= API CALL =================
-    const res = await fetch(
-      "https://sbmt-backend.onrender.com/api/students/add",
-      {
-        method: "POST",
-        headers: {
-          Authorization: "Bearer " + token,
-        },
-        body: formData,
+`,
+          )
+          .join("");
       }
-    );
+      /* ADD STUDENT (FIXED & SAFE) */
+      let isSubmitting = false;
 
-    const data = await res.json().catch(() => ({}));
+      async function addStudent() {
+        if (isSubmitting) return;
+        isSubmitting = true;
 
-    if (!res.ok) {
-      console.log("ERROR RESPONSE:", data);
-      alert(data.msg || data.message || "Error ❌");
-      return;
-    }
+        try {
+          const name = document.getElementById("name").value.trim();
+          const fatherName = document.getElementById("fatherName").value.trim();
+          const mobile = document.getElementById("mobile").value.trim();
+          const gender = document.getElementById("gender").value;
+          const dob = document.getElementById("dob").value;
+          const address = document.getElementById("address").value.trim();
+          const photoFile = document.getElementById("photo").files[0];
 
-    alert(data.message || "Student added successfully ✅");
+          // ================= VALIDATION =================
+          if (!name || !fatherName || !mobile || !gender || !dob) {
+            alert("All required fields fill karo ❌");
+            return;
+          }
 
-    // ================= RESET FORM =================
-    document.getElementById("name").value = "";
-    document.getElementById("fatherName").value = "";
-    document.getElementById("mobile").value = "";
-    document.getElementById("gender").value = "";
-    document.getElementById("dob").value = "";
-    document.getElementById("address").value = "";
-    document.getElementById("photo").value = "";
+          if (!/^[A-Za-z ]+$/.test(name)) {
+            alert("Name only letters allowed ❌");
+            return;
+          }
 
-    if (typeof loadStudents === "function") {
-      loadStudents();
-    }
+          if (!/^[0-9]{10}$/.test(mobile)) {
+            alert("Mobile must be 10 digits ❌");
+            return;
+          }
 
-  } catch (err) {
-    console.log("ADD STUDENT ERROR:", err);
-    alert("Server error ❌");
-  } finally {
-    isSubmitting = false;
-  }
-}
+          const token = localStorage.getItem("token");
+          if (!token) {
+            alert("Login required ❌");
+            return;
+          }
+
+          // ================= FORM DATA =================
+          const formData = new FormData();
+          formData.append("name", name);
+          formData.append("fatherName", fatherName);
+          formData.append("mobile", mobile);
+          formData.append("gender", gender);
+          formData.append("dob", dob);
+          formData.append("address", address);
+
+          if (photoFile) {
+            formData.append("photo", photoFile);
+          }
+
+          // ================= API CALL =================
+          const res = await fetch(
+            "https://sbmt-backend.onrender.com/api/students/add",
+            {
+              method: "POST",
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+              body: formData,
+            },
+          );
+
+          const data = await res.json().catch(() => ({}));
+
+          if (!res.ok) {
+            console.log("ERROR RESPONSE:", data);
+            alert(data.msg || data.message || "Error ❌");
+            return;
+          }
+
+          alert(data.message || "Student added successfully ✅");
+
+          // ================= RESET FORM =================
+          document.getElementById("name").value = "";
+          document.getElementById("fatherName").value = "";
+          document.getElementById("mobile").value = "";
+          document.getElementById("gender").value = "";
+          document.getElementById("dob").value = "";
+          document.getElementById("address").value = "";
+          document.getElementById("photo").value = "";
+
+          if (typeof loadStudents === "function") {
+            loadStudents();
+          }
+        } catch (err) {
+          console.log("ADD STUDENT ERROR:", err);
+          alert("Server error ❌");
+        } finally {
+          isSubmitting = false;
+        }
+      }
       //================================= LOAD STUDENTS ========================================
-     async function loadStudents() {
-  try {
-    const res = await fetch("https://sbmt-backend.onrender.com/api/students", {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    });
+      async function loadStudents() {
+        try {
+          const res = await fetch(
+            "https://sbmt-backend.onrender.com/api/students",
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            },
+          );
 
-    const data = await res.json();
+          const data = await res.json();
 
-    students = Array.isArray(data) ? data : [];
+          students = Array.isArray(data) ? data : [];
 
-    // 🔥 SORT HERE
-    students.sort((a, b) =>
-      (a.name || "").localeCompare(b.name || "")
-    );
+          // 🔥 SORT HERE
+          students.sort((a, b) => (a.name || "").localeCompare(b.name || ""));
 
-    const tableBody = document.getElementById("studentTableBody");
-    tableBody.innerHTML = "";
+          const tableBody = document.getElementById("studentTableBody");
+          tableBody.innerHTML = "";
 
-    students.forEach((s, index) => {
-      tableBody.innerHTML += `
+          students.forEach((s, index) => {
+            tableBody.innerHTML += `
 <tr>
   <td>${index + 1}</td>
   <td>${s.name}</td>
@@ -939,82 +960,80 @@ async function addStudent() {
   </td>
 </tr>
 `;
-    });
+          });
+        } catch (err) {
+          console.log("LOAD STUDENTS ERROR:", err);
+        }
+      }
 
-  } catch (err) {
-    console.log("LOAD STUDENTS ERROR:", err);
-  }
-}
+      //===================================================== attendance ======================================
+      let attendanceData = [];
+      let originalAttendance = []; // 🔥 original data save
+      // =========================
+      // ✅ helper (IST safe date)
+      // =========================
+      function getTodayDate() {
+        const d = new Date();
+        d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+        return d.toISOString().split("T")[0];
+      }
 
-//===================================================== attendance ======================================
-let attendanceData = [];
-let originalAttendance = [];   // 🔥 original data save
-// =========================
-// ✅ helper (IST safe date)
-// =========================
-function getTodayDate() {
-  const d = new Date();
-  d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
-  return d.toISOString().split("T")[0];
-}
+      // =========================
+      // 📥 LOAD ATTENDANCE
+      // =========================
+      async function loadAttendance() {
+        const date = document.getElementById("datePicker").value;
+        const today = getTodayDate();
 
-// =========================
-// 📥 LOAD ATTENDANCE
-// =========================
-async function loadAttendance() {
-  const date = document.getElementById("datePicker").value;
-  const today = getTodayDate();
+        if (date !== today) {
+          alert("❌ Only today's attendance allowed");
+          return;
+        }
 
-  if (date !== today) {
-    alert("❌ Only today's attendance allowed");
-    return;
-  }
+        const res = await fetch(
+          "https://sbmt-backend.onrender.com/api/attendance/open",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({ date }),
+          },
+        );
 
-  const res = await fetch("https://sbmt-backend.onrender.com/api/attendance/open", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
-    body: JSON.stringify({ date }),
-  });
+        const data = await res.json();
 
-  const data = await res.json();
+        // 🔥 SORT ALPHABETICALLY
+        originalAttendance = (data.records || []).sort((a, b) =>
+          (a.name || "").localeCompare(b.name || ""),
+        );
 
-  // 🔥 SORT ALPHABETICALLY
-  originalAttendance = (data.records || []).sort((a, b) =>
-    (a.name || "").localeCompare(b.name || "")
-  );
+        attendanceData = [...originalAttendance];
 
-  attendanceData = [...originalAttendance];
+        renderTable({ status: "MARKED", records: attendanceData });
+      }
 
-  renderTable({ status: "MARKED", records: attendanceData });
-}
+      // =========================
+      // 🧾 RENDER TABLE
+      // =========================
+      function renderTable(fullData) {
+        const tbody = document.getElementById("attendanceTable");
+        tbody.innerHTML = "";
 
-// =========================
-// 🧾 RENDER TABLE
-// =========================
-function renderTable(fullData) {
-  const tbody = document.getElementById("attendanceTable");
-  tbody.innerHTML = "";
+        attendanceData.forEach((s) => {
+          const originalIndex = originalAttendance.findIndex(
+            (o) => o.studentId === s.studentId,
+          );
 
-  attendanceData.forEach((s) => {
-    const originalIndex = originalAttendance.findIndex(
-      (o) => o.studentId === s.studentId
-    );
+          const row = document.createElement("tr");
 
-    const row = document.createElement("tr");
+          const color =
+            s.status === "P" ? "lightgreen" : s.status === "A" ? "salmon" : "";
 
-    const color =
-      s.status === "P"
-        ? "lightgreen"
-        : s.status === "A"
-        ? "salmon"
-        : "";
+          row.style.background = color;
 
-    row.style.background = color;
-
-    row.innerHTML = `
+          row.innerHTML = `
       <td>${originalIndex + 1}</td>   <!-- 🔥 REAL SR NO -->
       <td>${s.name}</td>
       <td>${s.status}</td>
@@ -1026,248 +1045,264 @@ function renderTable(fullData) {
 </td>
     `;
 
-    tbody.appendChild(row);
-  });
-  updateSummary();
-}
-// =========================
-// ✏️ MARK ATTENDANCE
-// =========================
-function mark(id, status) {
-  // 🔥 sirf current filtered list me update karo
-  attendanceData = attendanceData.map((s) =>
-    s.studentId === id ? { ...s, status } : s
-  );
+          tbody.appendChild(row);
+        });
+        updateSummary();
+      }
+      // =========================
+      // ✏️ MARK ATTENDANCE
+      // =========================
+      function mark(id, status) {
+        // 🔥 sirf current filtered list me update karo
+        attendanceData = attendanceData.map((s) =>
+          s.studentId === id ? { ...s, status } : s,
+        );
 
-  // 🔥 original list bhi update ho taki SR no / data stable rahe
-  originalAttendance = originalAttendance.map((s) =>
-    s.studentId === id ? { ...s, status } : s
-  );
+        // 🔥 original list bhi update ho taki SR no / data stable rahe
+        originalAttendance = originalAttendance.map((s) =>
+          s.studentId === id ? { ...s, status } : s,
+        );
 
-  // ❌ refresh / reload mat karo
-  renderTable({ status: "MARKED", records: attendanceData });
-}
+        // ❌ refresh / reload mat karo
+        renderTable({ status: "MARKED", records: attendanceData });
+      }
 
-// =========================
-// 💾 SAVE ATTENDANCE
-// =========================
-async function saveAttendance() {
-  const date = document.getElementById("datePicker").value;
-  const today = getTodayDate();
+      // =========================
+      // 💾 SAVE ATTENDANCE
+      // =========================
+      async function saveAttendance() {
+        const date = document.getElementById("datePicker").value;
+        const today = getTodayDate();
 
-  if (date !== today) {
-    alert("❌ Cannot save past/future attendance");
-    return;
-  }
+        if (date !== today) {
+          alert("❌ Cannot save past/future attendance");
+          return;
+        }
 
-  const res = await fetch("https://sbmt-backend.onrender.com/api/attendance/save", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
-    body: JSON.stringify({
-      date,
-      records: attendanceData,
-    }),
-  });
+        const res = await fetch(
+          "https://sbmt-backend.onrender.com/api/attendance/save",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+              date,
+              records: attendanceData,
+            }),
+          },
+        );
 
-  const data = await res.json();
-  alert(data.msg);
+        const data = await res.json();
+        alert(data.msg);
 
-  loadAttendance();
-  loadDashboard(); // 🔥 dashboard refresh
-}
+        loadAttendance();
+        loadDashboard(); // 🔥 dashboard refresh
+      }
 
-// =========================
-// 🎉 HOLIDAY
-// =========================
-async function markHoliday() {
-  const date = document.getElementById("datePicker").value;
-  const today = getTodayDate();
+      // =========================
+      // 🎉 HOLIDAY
+      // =========================
+      async function markHoliday() {
+        const date = document.getElementById("datePicker").value;
+        const today = getTodayDate();
 
-  if (date !== today) {
-    alert("❌ Holiday only allowed for today");
-    return;
-  }
+        if (date !== today) {
+          alert("❌ Holiday only allowed for today");
+          return;
+        }
 
-  const reason = prompt("Enter holiday reason:");
-  if (!reason) return;
+        const reason = prompt("Enter holiday reason:");
+        if (!reason) return;
 
-  const res = await fetch("https://sbmt-backend.onrender.com/api/attendance/holiday", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
-    body: JSON.stringify({
-      date,
-      reason,
-    }),
-  });
+        const res = await fetch(
+          "https://sbmt-backend.onrender.com/api/attendance/holiday",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+            body: JSON.stringify({
+              date,
+              reason,
+            }),
+          },
+        );
 
-  const data = await res.json();
-  alert(data.msg);
+        const data = await res.json();
+        alert(data.msg);
 
-  loadAttendance();
-}
+        loadAttendance();
+      }
 
-function filterAttendance() {
-  const value = document
-    .getElementById("attendanceSearch")
-    .value.toLowerCase();
+      function filterAttendance() {
+        const value = document
+          .getElementById("attendanceSearch")
+          .value.toLowerCase();
 
-  if (!value) {
-    attendanceData = [...originalAttendance];
-    renderTable({ status: "MARKED", records: attendanceData });
-    return;
-  }
+        if (!value) {
+          attendanceData = [...originalAttendance];
+          renderTable({ status: "MARKED", records: attendanceData });
+          return;
+        }
 
-  const keywords = value.split(",").map(v => v.trim());
+        const keywords = value.split(",").map((v) => v.trim());
 
-  attendanceData = originalAttendance.filter((s, index) => {
-    return keywords.some((key) => {
-      return (
-        s.name.toLowerCase().includes(key) ||
-        (index + 1).toString() === key
-      );
-    });
-  });
+        attendanceData = originalAttendance.filter((s, index) => {
+          return keywords.some((key) => {
+            return (
+              s.name.toLowerCase().includes(key) ||
+              (index + 1).toString() === key
+            );
+          });
+        });
 
-  renderTable({ status: "MARKED", records: attendanceData });
-}
+        renderTable({ status: "MARKED", records: attendanceData });
+      }
 
-// function renderFilteredTable(list) {
-//   const tbody = document.getElementById("attendanceTable");
-//   tbody.innerHTML = "";
+      // function renderFilteredTable(list) {
+      //   const tbody = document.getElementById("attendanceTable");
+      //   tbody.innerHTML = "";
 
-//   list.forEach((s, index) => {
-//     tbody.innerHTML += `
-//       <tr>
-//         <td>${index + 1}</td>
-//         <td>${s.name}</td>
-//         <td>${s.status || "-"}</td>
-//         <td>${s.srNo}</td>
-//         <td>
-//           <button onclick="mark('${s.studentId}','P')">P</button>
-//           <button onclick="mark('${s.studentId}','A')">A</button>
-//         </td>
-//       </tr>
-//     `;
-//   });
-// }
+      //   list.forEach((s, index) => {
+      //     tbody.innerHTML += `
+      //       <tr>
+      //         <td>${index + 1}</td>
+      //         <td>${s.name}</td>
+      //         <td>${s.status || "-"}</td>
+      //         <td>${s.srNo}</td>
+      //         <td>
+      //           <button onclick="mark('${s.studentId}','P')">P</button>
+      //           <button onclick="mark('${s.studentId}','A')">A</button>
+      //         </td>
+      //       </tr>
+      //     `;
+      //   });
+      // }
 
-function markAllPresent() {
-  attendanceData = attendanceData.map(s => ({
-    ...s,
-    status: "P"
-  }));
+      function markAllPresent() {
+        attendanceData = attendanceData.map((s) => ({
+          ...s,
+          status: "P",
+        }));
 
-  renderTable({
-    status: "MARKED",
-    records: attendanceData
-  });
-}
+        renderTable({
+          status: "MARKED",
+          records: attendanceData,
+        });
+      }
 
-//-----------------------
-// summary
-//--------------------
-function updateSummary() {
-  const total = originalAttendance.length;
+      //-----------------------
+      // summary
+      //--------------------
+      function updateSummary() {
+        const total = originalAttendance.length;
 
-  const present = originalAttendance.filter(s => s.status === "P").length;
-  const absent = originalAttendance.filter(s => s.status === "A").length;
+        const present = originalAttendance.filter(
+          (s) => s.status === "P",
+        ).length;
+        const absent = originalAttendance.filter(
+          (s) => s.status === "A",
+        ).length;
 
-  document.getElementById("totalCount").innerText = total;
-  document.getElementById("presentCount").innerText = present;
-  document.getElementById("absentCount").innerText = absent;
-}
-//========================================================== save marks ===============================
+        document.getElementById("totalCount").innerText = total;
+        document.getElementById("presentCount").innerText = present;
+        document.getElementById("absentCount").innerText = absent;
+      }
+      //========================================================== save marks ===============================
 
-async function saveMarks() {
+      async function saveMarks() {
+        const examType = document.getElementById("examType").value;
+        const subject = document.getElementById("subject").value;
+        const totalMarks = document.getElementById("totalMarks").value;
 
-  const examType = document.getElementById("examType").value;
-  const subject = document.getElementById("subject").value;
-  const totalMarks = document.getElementById("totalMarks").value;
+        if (!examType || !subject || !totalMarks) {
+          alert("All fields required ❌");
+          return;
+        }
 
-  if (!examType || !subject || !totalMarks) {
-    alert("All fields required ❌");
-    return;
-  }
+        // 🔥 collect marks + suggestion
+        let marks = [];
 
-  // 🔥 collect marks + suggestion
-  let marks = [];
+        students.forEach((s) => {
+          const marksInput = document.getElementById(`marks-${s._id}`);
+          const suggestionInput = document.getElementById(
+            `suggestion-${s._id}`,
+          );
 
-  students.forEach((s) => {
-    const marksInput = document.getElementById(`marks-${s._id}`);
-    const suggestionInput = document.getElementById(`suggestion-${s._id}`);
+          marks.push({
+            studentId: s._id,
+            marksObtained: marksInput?.value || 0,
+            suggestion: suggestionInput?.value || "",
+          });
+        });
 
-    marks.push({
-      studentId: s._id,
-      marksObtained: marksInput?.value || 0,
-      suggestion: suggestionInput?.value || ""
-    });
-  });
+        try {
+          const res = await fetch(
+            "https://sbmt-backend.onrender.com/api/marks/save",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+              body: JSON.stringify({
+                classId: className, // 🔥 IMPORTANT (classId, not className)
+                examType,
+                subject,
+                totalMarks,
+                marks,
+              }),
+            },
+          );
 
-  try {
-    const res = await fetch("https://sbmt-backend.onrender.com/api/marks/save", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-      body: JSON.stringify({
-        classId: className,   // 🔥 IMPORTANT (classId, not className)
-        examType,
-        subject,
-        totalMarks,
-        marks
-      }),
-    });
+          const data = await res.json();
 
-    const data = await res.json();
+          console.log("MARKS RESPONSE:", data);
 
-    console.log("MARKS RESPONSE:", data);
+          if (res.ok) {
+            alert("Marks Saved ✅");
+          } else {
+            alert(data.message || "Error ❌");
+          }
+        } catch (err) {
+          console.log("SAVE MARKS ERROR:", err);
+        }
+      }
+      //------------------------- grid load marks -------------------------------------
 
-    if (res.ok) {
-      alert("Marks Saved ✅");
-    } else {
-      alert(data.message || "Error ❌");
-    }
+      async function loadMarksGrid() {
+        const examType = document.getElementById("examType").value;
+        const subject = document.getElementById("subject").value;
+        const totalMarks = document.getElementById("totalMarks").value;
 
-  } catch (err) {
-    console.log("SAVE MARKS ERROR:", err);
-  }
-}
-//------------------------- grid load marks ------------------------------------- 
+        if (!examType || !subject || !totalMarks) {
+          alert("Fill all fields ❌");
+          return;
+        }
 
-async function loadMarksGrid() {
-  const examType = document.getElementById("examType").value;
-  const subject = document.getElementById("subject").value;
-  const totalMarks = document.getElementById("totalMarks").value;
+        try {
+          const res = await fetch(
+            "https://sbmt-backend.onrender.com/api/students",
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            },
+          );
 
-  if (!examType || !subject || !totalMarks) {
-    alert("Fill all fields ❌");
-    return;
-  }
+          const data = await res.json();
 
-  try {
-    const res = await fetch("https://sbmt-backend.onrender.com/api/students", {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("token"),
-      },
-    });
+          // 🔥 alphabetical sort
+          students = data.sort((a, b) =>
+            (a.name || "").localeCompare(b.name || ""),
+          );
 
-    const data = await res.json();
+          const table = document.getElementById("marksGrid");
 
-    // 🔥 alphabetical sort
-    students = data.sort((a, b) =>
-      (a.name || "").localeCompare(b.name || "")
-    );
-
-    const table = document.getElementById("marksGrid");
-
-    let html = `
+          let html = `
       <tr>
         <th>SR</th>
         <th>Name</th>
@@ -1276,8 +1311,8 @@ async function loadMarksGrid() {
       </tr>
     `;
 
-    students.forEach((s, index) => {
-      html += `
+          students.forEach((s, index) => {
+            html += `
         <tr>
           <td>${index + 1}</td>
           <td>${s.name}</td>
@@ -1289,48 +1324,47 @@ async function loadMarksGrid() {
           </td>
         </tr>
       `;
-    });
+          });
 
-    table.innerHTML = html;
-
-  } catch (err) {
-    console.log("LOAD MARKS GRID ERROR:", err);
-  }
-}
-// =========================== load marks (optional)==============================
-      async function loadMarksView() {
-  const examType = document.getElementById("viewExam").value;
-
-  if (!examType) {
-    alert("Select exam type");
-    return;
-  }
-
-  try {
-    const res = await fetch(
-      `https://sbmt-backend.onrender.com/api/marks/view/${className}/${examType}`,
-      {
-        headers: {
-          Authorization: "Bearer " + localStorage.getItem("token"),
-        },
+          table.innerHTML = html;
+        } catch (err) {
+          console.log("LOAD MARKS GRID ERROR:", err);
+        }
       }
-    );
+      // =========================== load marks (optional)==============================
+      async function loadMarksView() {
+        const examType = document.getElementById("viewExam").value;
 
-    let data = await res.json();
+        if (!examType) {
+          alert("Select exam type");
+          return;
+        }
 
-    // ✅ ALPHABETICAL SORT BY NAME
-    data.sort((a, b) =>
-      (a.studentId?.name || "").localeCompare(b.studentId?.name || "")
-    );
+        try {
+          const res = await fetch(
+            `https://sbmt-backend.onrender.com/api/marks/view/${className}/${examType}`,
+            {
+              headers: {
+                Authorization: "Bearer " + localStorage.getItem("token"),
+              },
+            },
+          );
 
-    const table = document.getElementById("marksViewTable");
+          let data = await res.json();
 
-    if (!Array.isArray(data) || data.length === 0) {
-      table.innerHTML = "<tr><td>No Marks Found</td></tr>";
-      return;
-    }
+          // ✅ ALPHABETICAL SORT BY NAME
+          data.sort((a, b) =>
+            (a.studentId?.name || "").localeCompare(b.studentId?.name || ""),
+          );
 
-    let html = `
+          const table = document.getElementById("marksViewTable");
+
+          if (!Array.isArray(data) || data.length === 0) {
+            table.innerHTML = "<tr><td>No Marks Found</td></tr>";
+            return;
+          }
+
+          let html = `
       <tr>
         <th>Roll No.</th>
         <th>Name</th>
@@ -1341,9 +1375,9 @@ async function loadMarksGrid() {
       </tr>
     `;
 
-    // ✅ SR NO = INDEX (REAL LOGIC)
-    data.forEach((m, index) => {
-      html += `
+          // ✅ SR NO = INDEX (REAL LOGIC)
+          data.forEach((m, index) => {
+            html += `
         <tr>
           <td>${index + 1}</td>   <!-- 🔥 THIS IS YOUR SR NO -->
           <td>${m.studentId?.name || "N/A"}</td>
@@ -1353,63 +1387,67 @@ async function loadMarksGrid() {
           <td>${m.suggestion || "-"}</td>
         </tr>
       `;
-    });
+          });
 
-    table.innerHTML = html;
-  } catch (err) {
-    console.log("ERROR:", err);
-    alert("Failed to load marks");
-  }
-}
+          table.innerHTML = html;
+        } catch (err) {
+          console.log("ERROR:", err);
+          alert("Failed to load marks");
+        }
+      }
 
-    // =========================================== downlaods =======================/
-    // 🔥 SECTION SWITCH SYSTEM
-function show(id) {
-  document.querySelectorAll(".section")
-    .forEach(s => s.classList.remove("active"));
+      // =========================================== downlaods =======================/
+      // 🔥 SECTION SWITCH SYSTEM
+      function show(id) {
+        document
+          .querySelectorAll(".section")
+          .forEach((s) => s.classList.remove("active"));
 
-  const el = document.getElementById(id);
+        const el = document.getElementById(id);
 
-  if (!el) return;
+        if (!el) return;
 
-  el.classList.add("active");
+        el.classList.add("active");
 
-  // 🔥 DOWNLOAD SECTION
-  if (id === "download") {
-    loadStudentsDropdown();
-  }
+        // 🔥 DOWNLOAD SECTION
+        if (id === "download") {
+          loadStudentsDropdown();
+        }
 
-  // 📅 ATTENDANCE MARK SECTION
-  if (id === "attMark") {
-    loadGrid(); // always reload today's attendance
-  }
+        // 📅 ATTENDANCE MARK SECTION
+        if (id === "attMark") {
+          loadGrid(); // always reload today's attendance
+        }
 
-  // 📊 ATTENDANCE VIEW SECTION
-  if (id === "attView") {
-    document.getElementById("viewTable").innerHTML = "";
-    document.getElementById("viewDate").value = "";
-  }
-  
-}
+        // 📊 ATTENDANCE VIEW SECTION
+        if (id === "attView") {
+          document.getElementById("viewTable").innerHTML = "";
+          document.getElementById("viewDate").value = "";
+        }
+      }
 
+      // 🔥 LOAD STUDENTS IN DROPDOWN
+      async function loadStudentsDropdown() {
+        const res = await fetch(
+          "https://sbmt-backend.onrender.com/api/students",
+          {
+            headers: {
+              Authorization: "Bearer " + localStorage.getItem("token"),
+            },
+          },
+        );
 
-// 🔥 LOAD STUDENTS IN DROPDOWN
-async function loadStudentsDropdown() {
-  const res = await fetch("https://sbmt-backend.onrender.com/api/students", {
-    headers: {
-      Authorization: "Bearer " + localStorage.getItem("token"),
-    },
-  });
+        const data = await res.json();
+        allStudents = data;
 
-  const data = await res.json();
-  allStudents = data;
+        renderStudentList(data);
+      }
+      function renderStudentList(list) {
+        const tbody = document.getElementById("studentListTable");
 
-  renderStudentList(data);
-}
-function renderStudentList(list) {
-  const tbody = document.getElementById("studentListTable");
-
-  tbody.innerHTML = list.map(s => `
+        tbody.innerHTML = list
+          .map(
+            (s) => `
     <tr>
       <td style="padding:6px;">${s.name}</td>
       <td style="padding:6px;">${s.className}</td>
@@ -1419,211 +1457,221 @@ function renderStudentList(list) {
         </button>
       </td>
     </tr>
-  `).join("");
-}
-function filterStudents() {
-  const value = document.getElementById("searchStudent").value.toLowerCase();
-
-  const filtered = allStudents.filter(s =>
-    s.name.toLowerCase().includes(value)
-  );
-
-  renderStudentList(filtered);
-}
-
-// 🔥 DOWNLOAD FULL CLASS PDF
-async function downloadClass() {
-  const token = localStorage.getItem("token");
-
-  const res = await fetch("https://sbmt-backend.onrender.com/api/download/class", {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  });
-
-  if (!res.ok) {
-    alert("Download failed ❌");
-    return;
-  }
-
-  const blob = await res.blob();
-  const url = window.URL.createObjectURL(blob);
-
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "class-report.pdf";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-}
-
-
-// 🔥 DOWNLOAD SINGLE STUDENT PDF
-function downloadStudent(id) {
-  const token = localStorage.getItem("token");
-
-  if (!id) {
-    alert("Student ID missing ❗");
-    return;
-  }
-
-  fetch(`https://sbmt-backend.onrender.com/api/download/student/${id}`, {
-    method: "GET",
-    headers: {
-      Authorization: "Bearer " + token,
-    },
-  })
-    .then(res => {
-      if (!res.ok) throw new Error("Download failed");
-      return res.blob();
-    })
-    .then(blob => {
-      const url = window.URL.createObjectURL(blob);
-
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "student-report.pdf";
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-    })
-    .catch(err => {
-      console.log(err);
-      alert("Download failed ❌");
-    });
-}
-function logout() {
-  localStorage.removeItem("token");
-  localStorage.removeItem("user");
-
-  alert("Logged out successfully ✅");
-
-  window.location.href = "teacher-login.html"; // apna login page path
-}
-
-
-function calculateTopStudents(records) {
-  const countMap = {};
-
-  records.forEach(s => {
-    if (!countMap[s.name]) countMap[s.name] = 0;
-    if (s.status === "P") countMap[s.name]++;
-  });
-
-  const sorted = Object.entries(countMap)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3)
-    .map(item => item[0]);
-
-  document.getElementById("topStudents").innerText =
-    sorted.join(", ") || "No data";
-}
-// ================= DASHBOARD DATA =================
-async function loadDashboard() {
-  try {
-    const token = localStorage.getItem("token");
-
-    // 📌 TODAY DATE
-    const today = getTodayDate();
-
-    // ================= STUDENTS =================
-    const studentRes = await fetch("https://sbmt-backend.onrender.com/api/students", {
-      headers: { Authorization: "Bearer " + token }
-    });
-
-    const studentData = await studentRes.json();
-    const totalStudents = Array.isArray(studentData) ? studentData.length : 0;
-
-    document.getElementById("totalStudents").innerText = totalStudents;
-
-    // ================= ATTENDANCE =================
-    const attRes = await fetch(
-  `https://sbmt-backend.onrender.com/api/attendance/view/${today}`,
-  {
-    headers: {
-      Authorization: "Bearer " + token
-    }
-  }
-);
-
-    const attData = await attRes.json();
-
-    let records = attData.records || [];
-
-    let present = records.filter(s => s.status === "P").length;
-    let absent = records.filter(s => s.status === "A").length;
-
-    document.getElementById("presentCount").innerText = present;
-    document.getElementById("absentCount").innerText = absent;
-
-    // ================= TOP STUDENTS =================
-    calculateTopStudents(records);
-
-  } catch (err) {
-    console.log("DASHBOARD ERROR:", err);
-  }
-}
-
-//-------------------------------------------------------------------------------------
-
-window.onload = async () => {
-  // ✅ default section
-  show("home");
-
-  // ✅ IST safe date fix
-  const dateInput = document.getElementById("datePicker");
-
-  if (dateInput) {
-    dateInput.value = getTodayDate();
-  }
-
-  try {
-    // ✅ LOAD STUDENTS
-    if (typeof loadStudents === "function") {
-      await loadStudents();
-    }
-
-    // 🔥 LOAD DASHBOARD (NEW)
-    if (typeof loadDashboard === "function") {
-      await loadDashboard();
-    }
-
-  } catch (err) {
-    console.log("INIT ERROR:", err);
-  }
-};
-
-setInterval(() => {
-  if (typeof loadDashboard === "function") {
-    loadDashboard();
-  }
-}, 30000);
-//===================================== create password ================================
-    async function changePassword() {
-      const oldPassword = document.getElementById("oldPassword").value;
-      const newPassword = document.getElementById("newPassword").value;
-
-      const token = localStorage.getItem("token");
-
-      const res = await fetch("https://sbmt-backend.onrender.com/api/teacher/change-password", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${token}`
-        },
-        body: JSON.stringify({ oldPassword, newPassword })
-      });
-
-      const data = await res.json();
-
-      if (res.ok) {
-        alert("Password changed successfully");
-      } else {
-        alert(data.message);
+  `,
+          )
+          .join("");
       }
-    }
+      function filterStudents() {
+        const value = document
+          .getElementById("searchStudent")
+          .value.toLowerCase();
 
+        const filtered = allStudents.filter((s) =>
+          s.name.toLowerCase().includes(value),
+        );
+
+        renderStudentList(filtered);
+      }
+
+      // 🔥 DOWNLOAD FULL CLASS PDF
+      async function downloadClass() {
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(
+          "https://sbmt-backend.onrender.com/api/download/class",
+          {
+            method: "GET",
+            headers: {
+              Authorization: "Bearer " + token,
+            },
+          },
+        );
+
+        if (!res.ok) {
+          alert("Download failed ❌");
+          return;
+        }
+
+        const blob = await res.blob();
+        const url = window.URL.createObjectURL(blob);
+
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "class-report.pdf";
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+
+      // 🔥 DOWNLOAD SINGLE STUDENT PDF
+      function downloadStudent(id) {
+        const token = localStorage.getItem("token");
+
+        if (!id) {
+          alert("Student ID missing ❗");
+          return;
+        }
+
+        fetch(`https://sbmt-backend.onrender.com/api/download/student/${id}`, {
+          method: "GET",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+        })
+          .then((res) => {
+            if (!res.ok) throw new Error("Download failed");
+            return res.blob();
+          })
+          .then((blob) => {
+            const url = window.URL.createObjectURL(blob);
+
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "student-report.pdf";
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+          })
+          .catch((err) => {
+            console.log(err);
+            alert("Download failed ❌");
+          });
+      }
+      function logout() {
+        localStorage.removeItem("token");
+        localStorage.removeItem("user");
+
+        alert("Logged out successfully ✅");
+
+        window.location.href = "teacher-login.html"; // apna login page path
+      }
+
+      function calculateTopStudents(records) {
+        const countMap = {};
+
+        records.forEach((s) => {
+          if (!countMap[s.name]) countMap[s.name] = 0;
+          if (s.status === "P") countMap[s.name]++;
+        });
+
+        const sorted = Object.entries(countMap)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 3)
+          .map((item) => item[0]);
+
+        document.getElementById("topStudents").innerText =
+          sorted.join(", ") || "No data";
+      }
+      // ================= DASHBOARD DATA =================
+      async function loadDashboard() {
+        try {
+          const token = localStorage.getItem("token");
+
+          // 📌 TODAY DATE
+          const today = getTodayDate();
+
+          // ================= STUDENTS =================
+          const studentRes = await fetch(
+            "https://sbmt-backend.onrender.com/api/students",
+            {
+              headers: { Authorization: "Bearer " + token },
+            },
+          );
+
+          const studentData = await studentRes.json();
+          const totalStudents = Array.isArray(studentData)
+            ? studentData.length
+            : 0;
+
+          document.getElementById("totalStudents").innerText = totalStudents;
+
+          // ================= ATTENDANCE =================
+          const attRes = await fetch(
+            `https://sbmt-backend.onrender.com/api/attendance/view/${today}`,
+            {
+              headers: {
+                Authorization: "Bearer " + token,
+              },
+            },
+          );
+
+          const attData = await attRes.json();
+
+          let records = attData.records || [];
+
+          let present = records.filter((s) => s.status === "P").length;
+          let absent = records.filter((s) => s.status === "A").length;
+
+          document.getElementById("presentCount").innerText = present;
+          document.getElementById("absentCount").innerText = absent;
+
+          // ================= TOP STUDENTS =================
+          calculateTopStudents(records);
+        } catch (err) {
+          console.log("DASHBOARD ERROR:", err);
+        }
+      }
+
+      //-------------------------------------------------------------------------------------
+
+      window.onload = async () => {
+        // ✅ default section
+        show("home");
+
+        // ✅ IST safe date fix
+        const dateInput = document.getElementById("datePicker");
+
+        if (dateInput) {
+          dateInput.value = getTodayDate();
+        }
+
+        try {
+          // ✅ LOAD STUDENTS
+          if (typeof loadStudents === "function") {
+            await loadStudents();
+          }
+
+          // 🔥 LOAD DASHBOARD (NEW)
+          if (typeof loadDashboard === "function") {
+            await loadDashboard();
+          }
+        } catch (err) {
+          console.log("INIT ERROR:", err);
+        }
+      };
+
+      setInterval(() => {
+        if (typeof loadDashboard === "function") {
+          loadDashboard();
+        }
+      }, 30000);
+      //===================================== create password ================================
+      async function changePassword() {
+        const oldPassword = document.getElementById("oldPassword").value;
+        const newPassword = document.getElementById("newPassword").value;
+
+        const token = localStorage.getItem("token");
+
+        const res = await fetch(
+          "https://sbmt-backend.onrender.com/api/teacher/change-password",
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify({ oldPassword, newPassword }),
+          },
+        );
+
+        const data = await res.json();
+
+        if (res.ok) {
+          alert("Password changed successfully");
+        } else {
+          alert(data.message);
+        }
+      }
     </script>
   </body>
 </html>

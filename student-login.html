@@ -157,7 +157,120 @@ button {
 <div class="msg" id="msg"></div>
 
 </div>
+<!-- 🔥 FIREBASE NOTIFICATION SETUP -->
+<script type="module">
 
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
+
+import {
+  getMessaging,
+  getToken,
+  onMessage
+}
+from "https://www.gstatic.com/firebasejs/12.13.0/firebase-messaging.js";
+
+const firebaseConfig = {
+
+  apiKey:
+  "AIzaSyBLY2fXbkWRLaSRUOS_N0nxH2_249InFno",
+
+  authDomain:
+  "sbmt-71459.firebaseapp.com",
+
+  projectId:
+  "sbmt-71459",
+
+  storageBucket:
+  "sbmt-71459.firebasestorage.app",
+
+  messagingSenderId:
+  "560536875795",
+
+  appId:
+  "1:560536875795:web:fdb841708496478ac560e6",
+
+  measurementId:
+  "G-S6E5P0EPLZ"
+};
+
+// 🔥 INIT FIREBASE
+const app = initializeApp(firebaseConfig);
+
+const messaging = getMessaging(app);
+
+// 🔥 ENABLE PUSH NOTIFICATIONS
+async function enableNotifications() {
+
+  try {
+
+    // permission
+    const permission =
+      await Notification.requestPermission();
+
+    if (permission !== "granted") {
+
+      console.log(
+        "Notification permission denied"
+      );
+
+      return;
+    }
+
+    // 🔥 REGISTER FIREBASE SERVICE WORKER
+    const registration =
+      await navigator.serviceWorker.register(
+        "/firebase-messaging-sw.js"
+      );
+
+    // 🔥 GET FCM TOKEN
+    const token = await getToken(
+      messaging,
+      {
+        vapidKey:
+        "BBZUcuJTK58eIu9lT8QI56cD7yJxbFFaAp53sumdIKwHAdgKbIpf_LJOgZhCT62Yp3Fsns3msxhFLYM6O64FbdI",
+
+        serviceWorkerRegistration:
+        registration
+      }
+    );
+
+    console.log("FCM TOKEN:", token);
+
+    // save token
+    localStorage.setItem(
+      "fcmToken",
+      token
+    );
+
+  } catch (err) {
+
+    console.log(
+      "FCM ERROR:",
+      err
+    );
+  }
+}
+
+// 🔥 START
+enableNotifications();
+
+// 🔥 FOREGROUND NOTIFICATION
+onMessage(messaging, (payload) => {
+
+  console.log(
+    "Foreground Notification:",
+    payload
+  );
+
+  alert(
+    payload.notification.title +
+    "\n" +
+    payload.notification.body
+  );
+});
+
+</script>
 <script>
 const BACKEND_URL = "https://sbmt-backend.onrender.com";
 
