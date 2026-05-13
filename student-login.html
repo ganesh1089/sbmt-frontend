@@ -226,22 +226,37 @@ async function login() {
   }
 }
 // ================= CHECK NOTIFICATIONS =================
-let lastSeen = Number(localStorage.getItem("notifSeen")) || 0;
 let firstLoad = true;
-let alertShown = false; // 🔥 important
+let alertShown = false;
 
 async function checkNotifications() {
   try {
-    const res = await fetch(`${BACKEND_URL}/api/hod/notifications/public`);
+
+    // 🔥 latest seen value
+    const currentSeen =
+      Number(localStorage.getItem("notifSeen")) || 0;
+
+    const res = await fetch(
+      `${BACKEND_URL}/api/hod/notifications/public`
+    );
+
     const data = await res.json();
 
+    // 🔔 show latest notification text
     document.getElementById("loginNotif").innerText =
-      data.latest ? "🔔 " + data.latest : "No new notifications";
+      data.latest
+        ? "🔔 " + data.latest
+        : "No new notifications";
 
-    // 🔥 ALERT ONLY ONCE PER SESSION
-    if (!firstLoad && data.count > lastSeen && !alertShown) {
+    // 🔥 show alert only once
+    if (
+      !firstLoad &&
+      data.count > currentSeen &&
+      !alertShown
+    ) {
       alert("🔔 New Notification Available!");
-      alertShown = true; // ek baar ke baad band
+
+      alertShown = true;
     }
 
     firstLoad = false;
@@ -251,8 +266,11 @@ async function checkNotifications() {
   }
 }
 
+// first load
 checkNotifications();
-setInterval(checkNotifications, 5000);
+
+// auto check every 5 sec
+let notifInterval = setInterval(checkNotifications, 5000);
 </script>
 
 </body>
